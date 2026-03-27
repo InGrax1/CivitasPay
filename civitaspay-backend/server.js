@@ -3,9 +3,11 @@ require('dotenv').config();
 
 const express = require('express');
 const { testConnection, pool } = require('./src/config/database');
-const rolesService = require('./src/services/roles.service');
+
+//rutas
 const authRoutes = require('./src/routes/auth.routes');
 const seedRoutes = require('./src/routes/seed.routes');
+const rolesRoutes = require('./src/routes/roles.routes');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -46,6 +48,11 @@ app.get('/health', (req, res) => {
 app.use(`${API_PREFIX}/auth`, authRoutes);
 
 // =====================================================
+// RUTAS DE ROLES
+// =====================================================
+app.use(`${API_PREFIX}/roles`, rolesRoutes);
+
+// =====================================================
 // RUTAS DE SEED (Solo desarrollo)
 // =====================================================
 if (process.env.NODE_ENV === 'development') {
@@ -74,70 +81,7 @@ app.get(`${API_PREFIX}/tables`, async (req, res) => {
   }
 });
 
-// Listar todos los roles
-app.get(`${API_PREFIX}/roles`, async (req, res) => {
-  try {
-    const resultado = await rolesService.obtenerTodosLosRoles();
-    
-    res.json({
-      success: true,
-      ...resultado
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      error: error.message
-    });
-  }
-});
 
-// Buscar rol por nombre
-app.get(`${API_PREFIX}/roles/nombre/:nombre`, async (req, res) => {
-  try {
-    const { nombre } = req.params;
-    const rol = await rolesService.buscarPorNombre(nombre);
-    
-    if (!rol) {
-      return res.status(404).json({
-        success: false,
-        error: 'Rol no encontrado'
-      });
-    }
-    
-    res.json({
-      success: true,
-      data: rol
-    });
-  } catch (error) {
-    const statusCode = error.message.includes('inválido') || 
-                       error.message.includes('requerido') ? 400 : 500;
-    
-    res.status(statusCode).json({
-      success: false,
-      error: error.message
-    });
-  }
-});
-
-// Verificar permiso
-app.get(`${API_PREFIX}/roles/verificar-permiso/:nombreRol/:permiso`, async (req, res) => {
-  try {
-    const { nombreRol, permiso } = req.params;
-    const tienePermiso = await rolesService.tienePermiso(nombreRol, permiso);
-    
-    res.json({
-      success: true,
-      rol: nombreRol,
-      permiso: permiso,
-      tienePermiso: tienePermiso
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      error: error.message
-    });
-  }
-});
 
 // =====================================================
 // FUNCIÓN PARA INICIAR EL SERVIDOR

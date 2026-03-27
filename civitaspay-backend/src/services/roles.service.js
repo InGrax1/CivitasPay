@@ -11,16 +11,26 @@ const rolesRepository = require('../repositories/roles.repository');
  */
 async function obtenerTodosLosRoles() {
   try {
-    // 1. Obtener datos del repository
     const roles = await rolesRepository.findAll();
     
-    // 2. Procesar los datos (lógica de negocio)
     const rolesConPermisos = roles.map(rol => {
-      // Parsear el JSON de permisos
       let permisos = [];
-      try {
-        permisos = JSON.parse(rol.permisos || '[]');
-      } catch (e) {
+      
+      // Si permisos ya es un array (MySQL tipo JSON), usarlo directamente
+      if (Array.isArray(rol.permisos)) {
+        permisos = rol.permisos;
+      } 
+      // Si es un string, parsearlo
+      else if (typeof rol.permisos === 'string') {
+        try {
+          permisos = JSON.parse(rol.permisos);
+        } catch (e) {
+          console.error(`Error parseando permisos de ${rol.nombre}:`, e);
+          permisos = [];
+        }
+      }
+      // Si es null o undefined, array vacío
+      else {
         permisos = [];
       }
       
@@ -28,18 +38,16 @@ async function obtenerTodosLosRoles() {
         id: rol.id,
         nombre: rol.nombre,
         descripcion: rol.descripcion,
-        permisos: permisos,  // Array en lugar de string
+        permisos: permisos,
         totalPermisos: permisos.length,
         esAdministrador: rol.nombre === 'ADMINISTRADOR',
         created_at: rol.created_at
       };
     });
     
-    // 3. Devolver resultado procesado
     return {
       total: rolesConPermisos.length,
       roles: rolesConPermisos,
-      // Estadísticas adicionales
       stats: {
         conPermisos: rolesConPermisos.filter(r => r.totalPermisos > 0).length,
         sinPermisos: rolesConPermisos.filter(r => r.totalPermisos === 0).length
@@ -81,9 +89,20 @@ async function buscarPorNombre(nombre) {
     
     // Procesar permisos
     let permisos = [];
-    try {
-      permisos = JSON.parse(rol.permisos || '[]');
-    } catch (e) {
+    // Si permisos ya es un array (MySQL tipo JSON), usarlo directamente
+    if (Array.isArray(rol.permisos)) {
+      permisos = rol.permisos;
+    } 
+    // Si es un string, parsearlo
+    else if (typeof rol.permisos === 'string') {
+      try {
+        permisos = JSON.parse(rol.permisos);
+      } catch (e) {
+        permisos = [];
+      }
+    }
+    // Si es null o undefined, array vacío
+    else {
       permisos = [];
     }
     
@@ -114,6 +133,8 @@ async function tienePermiso(nombreRol, permiso) {
     if (!rol) {
       return false;
     }
+    
+    const permisos = rol.permisos || [];
     
     // Si tiene el permiso "*" (todos), retorna true
     if (rol.permisos.includes('*')) {
