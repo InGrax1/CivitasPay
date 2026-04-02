@@ -487,3 +487,74 @@ Response al cliente
            └─> Valida firma con JWT_SECRET
                └─> Si válido: req.user = payload
                    └─> Controller usa req.user.empresa_id
+
+FASE 2 - Módulo de Obras COMPLETADA
+Archivos Creados (6 nuevos):
+
+src/repositories/obras.repository.js - Queries SQL para obras
+src/services/obras.service.js - Lógica de negocio con validaciones
+src/controllers/obras.controller.js - Manejo HTTP
+src/routes/obras.routes.js - Definición de endpoints
+src/validators/obras.validator.js - Esquemas Joi
+src/validators/ - Nueva carpeta creada
+
+Archivos Modificados (1):
+
+server.js - Registradas rutas de obras
+
+Dependencias Instaladas (1):
+
+joi - Validación de datos
+
+
+Endpoints Funcionales (5 nuevos)
+Método | Endpoint | Descripción | Auth | RBAC
+GET/api/obrasListar obras✅ JWT Cualquier usuario
+GET/api/obras/:idDetalle de obra✅ JWT Cualquier usuario 
+POST/api/obrasCrear obra✅ JWT Cualquier usuario
+PUT/api/obras/:idActualizar obra✅ JWT Cualquier usuario
+DELETE/api/obras/:idEliminar (soft delete)✅ JWTSolo Admin
+
+✅ Funcionalidades Implementadas
+1. CRUD Completo:
+
+✅ Crear obras con validación de porcentajes
+✅ Listar obras (filtradas por empresa_id)
+✅ Ver detalle de obra específica
+✅ Actualizar obras parcialmente
+✅ Eliminar obras (soft delete)
+
+2. Validaciones con Joi:
+
+✅ Nombre requerido (3-200 caracteres)
+✅ Cliente requerido (3-200 caracteres)
+✅ Fecha de inicio requerida
+✅ Fecha fin > fecha inicio
+✅ Porcentajes (0-100%)
+✅ Suma de porcentajes = 100%
+✅ Porcentaje retención (0-100%)
+✅ Estados válidos: ACTIVA, PAUSADA, FINALIZADA, CANCELADA
+
+3. Multitenancy:
+
+✅ Todas las queries filtran por empresa_id
+✅ Usuario solo ve obras de su empresa
+✅ Seguridad garantizada
+
+Soft Delete:
+
+✅ No se borra físicamente de la BD
+✅ Se marca con deleted_at
+✅ Permite auditoría
+
+
+Pruebas Ejecutadas (8/8)
+
+✅ Listar obras vacío
+✅ Crear obra exitosamente
+✅ Validación: porcentajes NO suman 100% (rechazado)
+✅ Listar obras con datos
+✅ Obtener detalle de obra
+✅ Actualizar obra
+✅ Eliminar obra (soft delete)
+✅ Verificar eliminación
