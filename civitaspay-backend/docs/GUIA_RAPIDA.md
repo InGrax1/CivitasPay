@@ -356,35 +356,6 @@ PORT=3001
 
 ---
 
-### 13. ¿Necesitas Ayuda?
-
-**Preguntas frecuentes:**
-- "¿Dónde pongo la lógica de negocio?" → Service
-- "¿Dónde van las queries SQL?" → Repository
-- "¿Cómo protejo un endpoint?" → Agregar middleware `verificarJWT`
-- "¿Cómo limito por rol?" → Agregar middleware `soloAdmin`
-
-**Contacto:**
-- Email del equipo: dev@civitaspay.com
-- Slack: #civitaspay-backend
-- Documentación interna: Wiki del proyecto
-
----
-
-## 🚀 Checklist de Tu Primer Día
-
-- [ ] Clonar repositorio
-- [ ] Instalar dependencias
-- [ ] Configurar .env
-- [ ] Crear base de datos
-- [ ] Iniciar servidor exitosamente
-- [ ] Hacer login con Thunder Client
-- [ ] Leer README.md completo
-- [ ] Explorar estructura src/
-- [ ] Crear tu primer endpoint de prueba
-- [ ] Hacer tu primer commit
-
----
 
 **¡Bienvenido al equipo!** 🎉
 

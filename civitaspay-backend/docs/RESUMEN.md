@@ -327,40 +327,91 @@
 3. 🔄 **CI/CD:** Configurar GitHub Actions
 4. 🎨 **Frontend sync:** Coordinar con equipo Angular
 
----
 
-## 📞 Contacto del Equipo
+-----------------------------------------------------------------
+-----------------------------------------------------------------
+-----------------------------------------------------------------
 
-**Backend Lead:** Juan  
-**Email:** juan@civitaspay.com  
-**Disponibilidad:** Lun-Vie 9am-6pm
 
-**Repositorio:** https://github.com/tu-usuario/civitaspay-backend  
-**Documentación:** Ver carpeta `/docs`
+RESUMEN: Lo que Hicimos en FASE 0 y FASE 1
+✅ FASE 0: Setup Inicial (Completada 100%)
+¿Qué construimos?
+1. Proyecto Node.js + Express
+   ├─ package.json con 12 dependencias
+   ├─ .env configurado (DB, JWT, CORS)
+   └─ .gitignore (protege .env)
 
----
+2. Base de Datos MySQL
+   ├─ 20 tablas creadas
+   ├─ 2 vistas (v_resumen_obras, v_gastos_por_categoria)
+   ├─ Índices optimizados
+   └─ Foreign keys con integridad referencial
 
-## 🎉 Conclusión
+3. Arquitectura Clean
+   ├─ src/config/database.js (pool de conexiones)
+   ├─ src/controllers/ (manejo HTTP)
+   ├─ src/services/ (lógica de negocio)
+   ├─ src/repositories/ (queries SQL)
+   ├─ src/middleware/ (interceptores)
+   └─ src/routes/ (definición de endpoints)
+¿Cómo funciona?
+Request del cliente
+    ↓
+Express recibe en puerto 3000
+    ↓
+Middleware (rate limiter, JSON parser)
+    ↓
+Router (/api/auth, /api/roles)
+    ↓
+Controller (valida formato HTTP)
+    ↓
+Service (lógica de negocio)
+    ↓
+Repository (ejecuta SQL)
+    ↓
+MySQL (retorna datos)
+    ↓
+Response al cliente
 
-El proyecto CivitasPay Backend ha completado exitosamente las **FASES 0 y 1** con una eficiencia del 162% respecto al tiempo estimado.
+✅ FASE 1: Autenticación JWT (Completada 100%)
+¿Qué construimos?
+1. Sistema de Login
+   ├─ POST /api/auth/login
+   ├─ Bcrypt verifica password (12 rounds)
+   ├─ Genera JWT access token (15 min)
+   ├─ Genera refresh token (7 días)
+   └─ Actualiza ultimo_login, ultimo_ip
 
-**Estado actual:** 
-- ✅ Sistema funcional con autenticación completa
-- ✅ Base de datos lista para crecer
-- ✅ Arquitectura sólida y escalable
-- ✅ Seguridad nivel producción
-- ✅ Documentación completa
+2. Renovación de Tokens
+   └─ POST /api/auth/refresh (renueva sin re-login)
 
-**Siguiente hito:** FASE 2 - Módulo de Obras (estimado 3-4 días)
+3. Verificación de Usuario
+   └─ GET /api/auth/me (datos del usuario logueado)
 
-**Riesgo general:** 🟢 Bajo  
-**Confianza en timeline:** 🟢 Alta  
-**Recomendación:** ✅ Proceder con FASE 2
+4. Logout
+   └─ POST /api/auth/logout (auditoría)
 
----
+5. Middleware de Seguridad
+   ├─ verificarJWT (valida token en cada request)
+   ├─ soloAdmin (solo rol ADMINISTRADOR)
+   ├─ soloAdminOAuxiliar (Admin o Auxiliar)
+   └─ requierePermiso(permiso) (factory function)
 
-**Aprobado por:**  
-[Firma Technical Lead]  
-[Firma Project Manager]
+6. Sistema RBAC
+   └─ Roles con permisos en JSON:
+       ADMINISTRADOR: ["*"]
+       AUXILIAR: ["ver_obras", "crear_gastos", ...]
+       RESIDENTE: []
+¿Cómo funciona el JWT?
+1. Usuario hace login
+   └─> Server valida credenciales
+       └─> Genera token firmado con JWT_SECRET
+           Payload: { id, email, empresa_id, rol, permisos }
+           └─> Cliente guarda token
 
-**Fecha:** 27 de Marzo, 2026
+2. Cliente hace request protegido
+   └─> Envía: Authorization: Bearer <token>
+       └─> Middleware verificarJWT decodifica
+           └─> Valida firma con JWT_SECRET
+               └─> Si válido: req.user = payload
+                   └─> Controller usa req.user.empresa_id
