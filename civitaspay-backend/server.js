@@ -8,6 +8,7 @@ const { testConnection, pool } = require('./src/config/database');
 const authRoutes = require('./src/routes/auth.routes');
 const seedRoutes = require('./src/routes/seed.routes');
 const rolesRoutes = require('./src/routes/roles.routes');
+const obrasRoutes = require('./src/routes/obras.routes');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -51,6 +52,11 @@ app.use(`${API_PREFIX}/auth`, authRoutes);
 // RUTAS DE ROLES
 // =====================================================
 app.use(`${API_PREFIX}/roles`, rolesRoutes);
+
+// =====================================================
+// RUTAS DE OBRAS
+// =====================================================
+app.use(`${API_PREFIX}/obras`, obrasRoutes);
 
 // =====================================================
 // RUTAS DE SEED (Solo desarrollo)

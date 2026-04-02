@@ -56,6 +56,7 @@ src/
 ├── repositories/   ← Queries SQL (SOLO SQL aquí)
 ├── middleware/     ← auth, RBAC, rate limiting
 └── routes/         ← Definir endpoints
+└──validators/     ← Esquemas Joi
 ```
 
 **Regla de oro:** Controller llama a Service, Service llama a Repository.

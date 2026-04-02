@@ -364,14 +364,6 @@ WHERE nombre = 'ADMINISTRADOR';
 
 ---
 
-## 🙏 Agradecimientos
-
-- Comunidad de Node.js por excelente documentación
-- Express.js por framework robusto y minimalista
-- MySQL por base de datos confiable y madura
-
----
-
 ## 📝 Notas de Desarrollo
 
 ### Comandos Útiles
@@ -405,14 +397,93 @@ style: Formatear código con Prettier
 chore: Actualizar dependencias
 ```
 
----
+-----------------------------------------------------------------
+-----------------------------------------------------------------
+-----------------------------------------------------------------
 
-**Autor:** Juan  
-**Fecha de Release:** 27 de Marzo, 2026  
-**Tiempo de Desarrollo:** 1 sesión intensiva  
-**Estado:** ✅ Funcional y listo para FASE 2
 
----
+RESUMEN: Lo que Hicimos en FASE 0 y FASE 1
+✅ FASE 0: Setup Inicial (Completada 100%)
+¿Qué construimos?
+1. Proyecto Node.js + Express
+   ├─ package.json con 12 dependencias
+   ├─ .env configurado (DB, JWT, CORS)
+   └─ .gitignore (protege .env)
 
-[Unreleased]: https://github.com/tu-usuario/civitaspay-backend/compare/v1.0.0...HEAD
-[1.0.0]: https://github.com/tu-usuario/civitaspay-backend/releases/tag/v1.0.0
+2. Base de Datos MySQL
+   ├─ 20 tablas creadas
+   ├─ 2 vistas (v_resumen_obras, v_gastos_por_categoria)
+   ├─ Índices optimizados
+   └─ Foreign keys con integridad referencial
+
+3. Arquitectura Clean
+   ├─ src/config/database.js (pool de conexiones)
+   ├─ src/controllers/ (manejo HTTP)
+   ├─ src/services/ (lógica de negocio)
+   ├─ src/repositories/ (queries SQL)
+   ├─ src/middleware/ (interceptores)
+   └─ src/routes/ (definición de endpoints)
+
+
+¿Cómo funciona?
+Request del cliente
+    ↓
+Express recibe en puerto 3000
+    ↓
+Middleware (rate limiter, JSON parser)
+    ↓
+Router (/api/auth, /api/roles)
+    ↓
+Controller (valida formato HTTP)
+    ↓
+Service (lógica de negocio)
+    ↓
+Repository (ejecuta SQL)
+    ↓
+MySQL (retorna datos)
+    ↓
+Response al cliente
+
+
+✅ FASE 1: Autenticación JWT (Completada 100%)
+¿Qué construimos?
+1. Sistema de Login
+   ├─ POST /api/auth/login
+   ├─ Bcrypt verifica password (12 rounds)
+   ├─ Genera JWT access token (15 min)
+   ├─ Genera refresh token (7 días)
+   └─ Actualiza ultimo_login, ultimo_ip
+
+2. Renovación de Tokens
+   └─ POST /api/auth/refresh (renueva sin re-login)
+
+3. Verificación de Usuario
+   └─ GET /api/auth/me (datos del usuario logueado)
+
+4. Logout
+   └─ POST /api/auth/logout (auditoría)
+
+5. Middleware de Seguridad
+   ├─ verificarJWT (valida token en cada request)
+   ├─ soloAdmin (solo rol ADMINISTRADOR)
+   ├─ soloAdminOAuxiliar (Admin o Auxiliar)
+   └─ requierePermiso(permiso) (factory function)
+
+6. Sistema RBAC
+   └─ Roles con permisos en JSON:
+       ADMINISTRADOR: ["*"]
+       AUXILIAR: ["ver_obras", "crear_gastos", ...]
+       RESIDENTE: []
+¿Cómo funciona el JWT?
+1. Usuario hace login
+   └─> Server valida credenciales
+       └─> Genera token firmado con JWT_SECRET
+           Payload: { id, email, empresa_id, rol, permisos }
+           └─> Cliente guarda token
+
+2. Cliente hace request protegido
+   └─> Envía: Authorization: Bearer <token>
+       └─> Middleware verificarJWT decodifica
+           └─> Valida firma con JWT_SECRET
+               └─> Si válido: req.user = payload
+                   └─> Controller usa req.user.empresa_id
