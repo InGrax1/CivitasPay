@@ -444,6 +444,8 @@ MySQL (retorna datos)
     ↓
 Response al cliente
 
+-----------------------------------------------
+-----------------------------------------------
 
 ✅ FASE 1: Autenticación JWT (Completada 100%)
 ¿Qué construimos?
@@ -487,6 +489,8 @@ Response al cliente
            └─> Valida firma con JWT_SECRET
                └─> Si válido: req.user = payload
                    └─> Controller usa req.user.empresa_id
+-----------------------------------------------
+-----------------------------------------------
 
 FASE 2 - Módulo de Obras COMPLETADA
 Archivos Creados (6 nuevos):
@@ -558,3 +562,72 @@ Pruebas Ejecutadas (8/8)
 ✅ Actualizar obra
 ✅ Eliminar obra (soft delete)
 ✅ Verificar eliminación
+-----------------------------------------------
+-----------------------------------------------
+FASE 3 - Módulo de Estimaciones COMPLETADA
+
+Archivos Creados (3 nuevos):
+src/repositories/estimaciones.repository.js - Queries SQL
+src/services/estimaciones.service.js - Motor financiero
+src/controllers/estimaciones.controller.js - Manejo HTTP
+
+Archivos Modificados (2):
+src/routes/estimaciones.routes.js - Rutas anidadas (creado)
+server.js - Registro de rutas anidadas
+
+Endpoints Funcionales (6 nuevos)
+Método | Endpoint | Descripción | Auth
+GET/api/obras/:obraId/estimaciones | Listar estimaciones | JWT
+GET/api/obras/:obraId/estimaciones/:id | Detalle | JWT
+POST/api/obras/:obraId/estimaciones | Crear con motor financiero | JWT
+PUT/api/obras/:obraId/estimaciones/:id | Actualizar (BORRADOR)| JWT
+PATCH/api/obras/:obraId/estimaciones/:id/estado | Cambiar estado | JWT
+DELETE/api/obras/:obraId/estimaciones/:id | Eliminar (Admin) | JWT
+
+
+Motor Financiero Implementado
+Fórmula Maestra:
+javascriptmonto_base = monto_bruto / 1.16
+iva = monto_bruto - monto_base
+retencion = monto_base × (% retención / 100)
+costo_directo = monto_base - retencion
+
+// Distribución automática:
+materiales = costo_directo × (% materiales / 100)
+nomina = costo_directo × (% nomina / 100)
+herramienta = costo_directo × (% herramienta / 100)
+
+
+
+Máquina de Estados
+BORRADOR → EN_REVISION → APROBADA → COBRADA
+    ↓           ↓
+  (editable) (puede regresar a BORRADOR)
+Transiciones permitidas:
+
+BORRADOR → EN_REVISION ✅
+EN_REVISION → APROBADA o BORRADOR ✅
+APROBADA → COBRADA ✅
+COBRADA → (estado final, sin transiciones) ✅
+
+
+✅ Funcionalidades Implementadas
+
+✅ Cálculo automático de todos los montos financieros
+✅ Auto-numeración de estimaciones por obra
+✅ Distribución automática a categorías según porcentajes de la obra
+✅ Validación de estados - solo permite transiciones válidas
+✅ Edición restrictiva - solo BORRADOR se puede editar/eliminar
+✅ Auditoría - registra quién y cuándo aprobó
+✅ Multitenancy - validación de empresa_id a través de obra
+✅ Rutas anidadas - /obras/:obraId/estimaciones
+
+
+Pruebas Ejecutadas (5/5)
+
+✅ Listar estimaciones vacío
+✅ Crear estimación con motor financiero (cálculos automáticos)
+✅ Listar estimaciones con datos
+✅ Cambiar estado a EN_REVISION
+✅ Aprobar estimación (APROBADA)
+
