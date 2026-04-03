@@ -9,6 +9,8 @@ const authRoutes = require('./src/routes/auth.routes');
 const seedRoutes = require('./src/routes/seed.routes');
 const rolesRoutes = require('./src/routes/roles.routes');
 const obrasRoutes = require('./src/routes/obras.routes');
+const estimacionesRoutes = require('./src/routes/estimaciones.routes');
+
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -59,6 +61,15 @@ app.use(`${API_PREFIX}/roles`, rolesRoutes);
 app.use(`${API_PREFIX}/obras`, obrasRoutes);
 
 // =====================================================
+// RUTAS DE ESTIMACIONES (anidadas bajo obras)
+// =====================================================
+const { Router } = require('express');
+const obrasRouter = Router();
+obrasRouter.use('/:obraId/estimaciones', estimacionesRoutes);
+app.use(`${API_PREFIX}/obras`, obrasRouter);
+
+
+// =====================================================
 // RUTAS DE SEED (Solo desarrollo)
 // =====================================================
 if (process.env.NODE_ENV === 'development') {
@@ -101,17 +112,20 @@ async function startServer() {
     
     // 2. Iniciar Express
     app.listen(PORT, () => {
-      console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-      console.log(`🚀 CivitasPay Backend iniciado`);
-      console.log(`📝 Entorno: ${process.env.NODE_ENV}`);
-      console.log(`🌐 Puerto: ${PORT}`);
-      console.log(`🔗 URL: http://localhost:${PORT}`);
-      console.log(`💚 Health: http://localhost:${PORT}/health`);
-      console.log(`🔐 Auth: http://localhost:${PORT}${API_PREFIX}/auth/login`);
-      console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-    });
+    console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+    console.log(`CivitasPay Backend iniciado`);
+    console.log(`Entorno: ${process.env.NODE_ENV}`);
+    console.log(`Puerto: ${PORT}`);
+    console.log(`URL: http://localhost:${PORT}`);
+    console.log(`Health: http://localhost:${PORT}/health`);
+    console.log(`Auth: http://localhost:${PORT}${API_PREFIX}/auth/login`);
+    console.log(`Roles: http://localhost:${PORT}${API_PREFIX}/roles`);
+    console.log(`Obras: http://localhost:${PORT}${API_PREFIX}/obras`);
+    console.log(`Estimaciones: http://localhost:${PORT}${API_PREFIX}/obras/:obraId/estimaciones`);
+    console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+  });
   } catch (error) {
-    console.error('❌ No se pudo iniciar el servidor');
+    console.error('No se pudo iniciar el servidor');
     console.error('   Razón: Error de conexión a MySQL');
     console.error('   Detalle:', error.message);
     process.exit(1);
