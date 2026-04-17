@@ -686,3 +686,53 @@ DELETE	/api/obras/:obraId/gastos/:id	Eliminar (soft delete)	JWT	Solo Admin
       is_personal, es_caja_chica, factura_numero, factura_xml_url,
       factura_pdf_url, ticket_foto_url, notas, tags (JSON),
       created_by, created_at, updated_at, deleted_at, sync_status, version
+
+
+
+## [1.5.0] - 2026-04-17
+
+### 🎉 FASE 5: Reportes y Dashboard Financiero
+
+#### ✨ Features Añadidas
+
+##### Dashboard Financiero por Obra
+Endpoint único que consolida toda la información financiera de una obra en una sola llamada, con todos los cálculos ejecutados en paralelo (`Promise.all`).
+
+##### Secciones del Dashboard
+- **`obra`** — Datos básicos: nombre, cliente, estado, fechas
+- **`resumen_financiero`** — Total facturado, base, IVA, retención, costo directo, cobrado, gastado y saldo disponible
+- **`indicadores`** — % de ejecución presupuestal, rentabilidad bruta, conteo de estimaciones por estado
+- **`balance_categorias`** — Por cada categoría: total asignado (de estimaciones aprobadas), total gastado, saldo disponible y % de uso
+- **`gastos_especiales`** — Totales de gastos personales y caja chica separados del flujo principal
+- **`actividad_reciente`** — Últimas 5 estimaciones y últimos 5 gastos
+
+##### Indicadores Calculados
+% Ejecución    = (total_gastado / total_costo_directo) × 100
+Rentabilidad   = ((total_facturado - total_gastado) / total_facturado) × 100
+Saldo          = total_costo_directo - total_gastado
+% Uso categoría = (gastado_categoria / asignado_categoria) × 100
+
+#### 📁 Archivos Creados
+- `src/repositories/reportes.repository.js`
+- `src/services/reportes.service.js`
+- `src/controllers/reportes.controller.js`
+- `src/routes/reportes.routes.js`
+
+#### 📝 Archivos Modificados
+- `server.js` — Registro de ruta de reportes bajo `obrasRouter`
+
+#### 🌐 Endpoints Implementados (1 nuevo)
+
+| Método | Endpoint | Descripción | Auth |
+|--------|----------|-------------|------|
+| GET | `/api/obras/:obraId/dashboard` | Dashboard financiero completo | JWT |
+
+#### 📊 Verificado con Datos Reales
+Estimación aprobada: $200,000
+→ Costo directo:   $163,793.10
+→ Materiales (60%): $98,275.86  | Gastado: $0       | Saldo: $98,275.86
+→ Nómina (30%):     $49,137.93  | Gastado: $15,000  | Saldo: $34,137.93 (30.53%)
+→ Herramienta (10%):$16,379.31  | Gastado: $0       | Saldo: $16,379.31
+Saldo disponible total: $148,793.10
+% Ejecución: 9.16%
+Rentabilidad bruta: 92.50%
