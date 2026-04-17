@@ -12,7 +12,7 @@ const obrasRoutes = require('./src/routes/obras.routes');
 const estimacionesRoutes = require('./src/routes/estimaciones.routes');
 const gastosRoutes = require('./src/routes/gastos.routes');
 const reportesRoutes = require('./src/routes/reportes.routes');
-
+const subcontratosRoutes = require('./src/routes/subcontratos.routes');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -76,6 +76,11 @@ app.use(`${API_PREFIX}/obras`, obrasRouter);
 obrasRouter.use('/:obraId/gastos', gastosRoutes);
 
 // =====================================================
+// RUTAS DE SUBCONTRATOS
+// =====================================================
+obrasRouter.use('/:obraId/subcontratos', subcontratosRoutes); 
+
+// =====================================================
 // RUTAS DE REPORTES
 // =====================================================
 obrasRouter.use('/:obraId', reportesRoutes);
@@ -135,6 +140,7 @@ async function startServer() {
     console.log(`Estimaciones: http://localhost:${PORT}${API_PREFIX}/obras/:obraId/estimaciones`);
     console.log(`Gastos: http://localhost:${PORT}${API_PREFIX}/obras/:obraId/gastos`);
     console.log(`Dashboard: http://localhost:${PORT}${API_PREFIX}/obras/:obraId/dashboard`);
+    console.log(`Subcontratos: http://localhost:${PORT}${API_PREFIX}/obras/:obraId/subcontratos`);
 
     console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
   });
