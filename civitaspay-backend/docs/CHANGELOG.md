@@ -736,3 +736,52 @@ Estimación aprobada: $200,000
 Saldo disponible total: $148,793.10
 % Ejecución: 9.16%
 Rentabilidad bruta: 92.50%
+
+
+## [1.6.0] - 2026-04-17
+
+### 🎉 FASE 6: Módulo de Subcontratos Completada
+
+#### ✨ Features Añadidas
+
+##### CRUD de Subcontratos
+- Registro de empresas subcontratadas por obra
+- Control de `monto_total`, `monto_pagado` y `monto_pendiente`
+- Soft delete (solo si no tiene pagos registrados)
+
+##### Registro de Pagos
+- Pagos parciales o totales al subcontrato
+- Validación: el pago no puede exceder el `monto_pendiente`
+- Liquidación automática: al completar pagos el estado cambia a `LIQUIDADO`
+- Métodos de pago: `TRANSFERENCIA`, `CHEQUE`, `EFECTIVO`, `OTRO`
+- Historial completo de pagos en el detalle del subcontrato
+
+##### Máquina de Estados
+ACTIVO ↔ PAUSADO → CANCELADO
+ACTIVO → LIQUIDADO (automático al completar pagos)
+
+#### 📁 Archivos Creados
+- `src/repositories/subcontratos.repository.js`
+- `src/services/subcontratos.service.js`
+- `src/controllers/subcontratos.controller.js`
+- `src/routes/subcontratos.routes.js`
+
+#### 📝 Archivos Modificados
+- `server.js` — Registro de rutas anidadas de subcontratos
+
+#### 🌐 Endpoints Implementados (7 nuevos)
+
+| Método | Endpoint | Descripción |
+|--------|----------|-------------|
+| GET | `/api/obras/:obraId/subcontratos` | Listar |
+| GET | `/api/obras/:obraId/subcontratos/:id` | Detalle con pagos |
+| POST | `/api/obras/:obraId/subcontratos` | Crear |
+| PUT | `/api/obras/:obraId/subcontratos/:id` | Actualizar |
+| PATCH | `/api/obras/:obraId/subcontratos/:id/estado` | Cambiar estado |
+| DELETE | `/api/obras/:obraId/subcontratos/:id` | Eliminar (Admin) |
+| POST | `/api/obras/:obraId/subcontratos/:id/pagos` | Registrar pago |
+
+#### 📊 Verificado con Datos Reales
+- Subcontrato $85,000 → Anticipo $30,000 → Pago final $55,000 → LIQUIDADO ✅
+- Validación de pago excedente funcionando ✅
+- Cambio de estado ACTIVO → PAUSADO ✅
