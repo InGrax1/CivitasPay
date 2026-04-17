@@ -1,19 +1,9 @@
 # Changelog - CivitasPay Backend
 
-Todos los cambios notables en este proyecto serán documentados en este archivo.
+odos los cambios notables en este proyecto serán documentados en este archivo.
 
-El formato está basado en [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
-y este proyecto adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+El formato está basado en Keep a Changelog, y este proyecto adhiere a Semantic Versioning.
 
----
-
-## [1.0.0] - 2026-03-27
-
-### 🎉 Lanzamiento Inicial - FASE 0 y FASE 1 Completadas
-
-Este es el primer release funcional del backend de CivitasPay, con autenticación JWT completa y arquitectura Clean implementada.
-
----
 
 ## ✨ Features Implementadas
 
@@ -88,7 +78,6 @@ Cada capa tiene una única responsabilidad y no conoce detalles de implementaci�
 |--------|----------|-------------|------|
 | POST | `/api/auth/login` | Login con email/password | No |
 | POST | `/api/auth/refresh` | Renovar access token | No |
-| GET | `/api/auth/me` | Datos del usuario actual | Sí |
 | POST | `/api/auth/logout` | Cerrar sesión (auditoría) | Sí |
 
 #### Desarrollo (`/api/seed`) - Solo en NODE_ENV=development
@@ -630,4 +619,70 @@ Pruebas Ejecutadas (5/5)
 ✅ Listar estimaciones con datos
 ✅ Cambiar estado a EN_REVISION
 ✅ Aprobar estimación (APROBADA)
+-----------------------------------------------
+-----------------------------------------------
 
+🎉 FASE 4: Módulo de Gastos (Egresos) Completada
+Features Añadidas:
+CRUD de Gastos
+   Registro completo de egresos asociados a obras
+   Asociación obligatoria a categorías (Materiales, Nómina, Herramienta)
+   Soporte para gastos personales (is_personal) separados del flujo financiero
+   Soporte para caja chica (es_caja_chica) identificada
+   Soft delete implementado
+
+Comprobantes y Documentos
+   Campo factura_numero para número de factura
+   Campo factura_xml_url para XML del SAT
+   Campo factura_pdf_url para PDF de factura
+   Campo ticket_foto_url para foto de ticket físico
+   Campo tags (JSON) para clasificación adicional
+
+Auto-creación de Categorías
+   Al crear una obra se crean automáticamente 3 categorías base:
+   Materiales (color #FF6B6B)
+   Nómina (color  #4ECDC4)
+   Herramienta (color #45B7D1)
+   Los porcentajes de distribución son configurables por obra (no son fijos)
+
+Filtros en Listado
+   Filtrar por categoria_id
+   Filtrar por rango de fechas (fecha_desde, fecha_hasta)
+   Filtrar por tipo (is_personal, es_caja_chica)
+
+Resumen Financiero por Categoría
+   Endpoint dedicado: GET /api/obras/:obraId/gastos/resumen/categorias
+   Agrupa gastos por categoría mostrando total gastado
+   Excluye gastos personales del resumen
+   Muestra categorías sin gastos con total $0.00
+
+📁 Archivos Creados
+   src/repositories/gastos.repository.js
+   src/services/gastos.service.js
+   src/controllers/gastos.controller.js
+   src/routes/gastos.routes.js
+
+📝 Archivos Modificados
+   src/services/obras.service.js — Auto-creación de categorías al crear obra
+   server.js — Registro de rutas anidadas de gastos
+
+🌐 Endpoints Implementados (6 nuevos)
+Método	Endpoint	Descripción	Auth	RBAC
+GET	/api/obras/:obraId/gastos	Listar gastos con filtros	JWT	Cualquier usuario
+GET	/api/obras/:obraId/gastos/resumen/categorias	Resumen por categoría	JWT	Cualquier usuario
+GET	/api/obras/:obraId/gastos/:id	Detalle de gasto	JWT	Cualquier usuario
+POST	/api/obras/:obraId/gastos	Crear gasto	JWT	Cualquier usuario
+PUT	/api/obras/:obraId/gastos/:id	Actualizar gasto	JWT	Cualquier usuario
+DELETE	/api/obras/:obraId/gastos/:id	Eliminar (soft delete)	JWT	Solo Admin
+
+🔧 Correcciones Durante Desarrollo
+   Columna fecha_gasto (no date ni fecha_estimacion)
+   Columna es_caja_chica (no is_caja_chica)
+   categoria_id es NOT NULL en schema — se requiere categoría al crear gasto
+   notas existe en la tabla pero no se estaba usando — agregado al service
+
+🗄️ Schema Real de la Tabla gastos
+      id, obra_id, categoria_id, concepto, proveedor, monto, fecha_gasto,
+      is_personal, es_caja_chica, factura_numero, factura_xml_url,
+      factura_pdf_url, ticket_foto_url, notas, tags (JSON),
+      created_by, created_at, updated_at, deleted_at, sync_status, version

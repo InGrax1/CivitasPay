@@ -10,6 +10,7 @@ const seedRoutes = require('./src/routes/seed.routes');
 const rolesRoutes = require('./src/routes/roles.routes');
 const obrasRoutes = require('./src/routes/obras.routes');
 const estimacionesRoutes = require('./src/routes/estimaciones.routes');
+const gastosRoutes = require('./src/routes/gastos.routes');
 
 
 const app = express();
@@ -61,12 +62,17 @@ app.use(`${API_PREFIX}/roles`, rolesRoutes);
 app.use(`${API_PREFIX}/obras`, obrasRoutes);
 
 // =====================================================
-// RUTAS DE ESTIMACIONES (anidadas bajo obras)
+// RUTAS DE ESTIMACIONES
 // =====================================================
 const { Router } = require('express');
 const obrasRouter = Router();
 obrasRouter.use('/:obraId/estimaciones', estimacionesRoutes);
 app.use(`${API_PREFIX}/obras`, obrasRouter);
+
+// =====================================================
+// RUTAS DE GASTOS (anidadas bajo obras)
+// =====================================================
+obrasRouter.use('/:obraId/gastos', gastosRoutes);
 
 
 // =====================================================
@@ -122,6 +128,7 @@ async function startServer() {
     console.log(`Roles: http://localhost:${PORT}${API_PREFIX}/roles`);
     console.log(`Obras: http://localhost:${PORT}${API_PREFIX}/obras`);
     console.log(`Estimaciones: http://localhost:${PORT}${API_PREFIX}/obras/:obraId/estimaciones`);
+    console.log(`Gastos: http://localhost:${PORT}${API_PREFIX}/obras/:obraId/gastos`);
     console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
   });
   } catch (error) {

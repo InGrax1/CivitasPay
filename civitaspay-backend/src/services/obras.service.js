@@ -93,6 +93,20 @@ async function crearObra(obraData, empresaId) {
     
     // Guardar en base de datos
     const obraId = await obrasRepository.create(nuevaObra);
+
+    //Auto-crear las 3 categorías  base
+    const categoriasBase = [
+      { tipo: 'MATERIALES', nombre: 'Materiales', color: '#FF6B6B' },
+      { tipo: 'NOMINA',     nombre: 'Nómina',     color: '#4ECDC4' },
+      { tipo: 'HERRAMIENTA',nombre: 'Herramienta',color: '#45B7D1' }
+    ];
+
+    for (const cat of categoriasBase) {
+      await pool.query(`
+        INSERT INTO categorias (id, obra_id, nombre, tipo, saldo_actual, limite_asignado, color, activa)
+        VALUES (?, ?, ?, ?, 0.00, 0.00, ?, TRUE)
+      `, [uuidv4(), obraId, cat.nombre, cat.tipo, cat.color]);
+    }
     
     return {
       id: obraId,
