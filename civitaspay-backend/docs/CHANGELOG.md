@@ -689,7 +689,7 @@ DELETE	/api/obras/:obraId/gastos/:id	Eliminar (soft delete)	JWT	Solo Admin
 
 
 
-## [1.5.0] - 2026-04-17
+## [1.5.0]
 
 ### 🎉 FASE 5: Reportes y Dashboard Financiero
 
@@ -738,7 +738,7 @@ Saldo disponible total: $148,793.10
 Rentabilidad bruta: 92.50%
 
 
-## [1.6.0] - 2026-04-17
+## [1.6.0] 
 
 ### 🎉 FASE 6: Módulo de Subcontratos Completada
 
@@ -787,7 +787,7 @@ ACTIVO → LIQUIDADO (automático al completar pagos)
 - Cambio de estado ACTIVO → PAUSADO ✅
 
 
-## [1.7.0] - 2026-04-17
+## [1.7.0]
 
 ### 🎉 FASE 7: Módulo de Caja Chica Completada
 
@@ -838,7 +838,7 @@ ACTIVO → LIQUIDADO (automático al completar pagos)
 - Validación límite máximo (máximo a reponer: $5,350) ✅
 - Desactivación de caja ✅
 
-## [1.8.0] - 2026-04-17
+## [1.8.0]
 
 ### 🎉 FASE 8: Módulo de Fondo de Garantía Completada
 
@@ -881,8 +881,7 @@ ACTIVO → LIQUIDADO (automático al completar pagos)
 - Validación exceso: $99,999 > $3,620.69 rechazado ✅
 
 
-## [1.9.0] - 2026-04-18
-
+## [1.9.0]
 ### 🎉 FASE 9: Módulo de Cierres Mensuales Completada
 
 #### ✨ Features Añadidas
