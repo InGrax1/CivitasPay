@@ -15,6 +15,8 @@ const reportesRoutes = require('./src/routes/reportes.routes');
 const subcontratosRoutes = require('./src/routes/subcontratos.routes');
 const cajaChicaRoutes = require('./src/routes/caja_chica.routes');
 const fondoGarantiaRoutes = require('./src/routes/fondo_garantia.routes');
+const cierresRoutes = require('./src/routes/cierres.routes');
+
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -93,6 +95,11 @@ obrasRouter.use('/:obraId/caja-chica', cajaChicaRoutes);
 obrasRouter.use('/:obraId/fondo-garantia', fondoGarantiaRoutes);
 
 // =====================================================
+// RUTAS DE CIERRES MENSUALES 
+// =====================================================
+obrasRouter.use('/:obraId/cierres', cierresRoutes);
+
+// =====================================================
 // RUTAS DE REPORTES
 // =====================================================
 obrasRouter.use('/:obraId', reportesRoutes);
@@ -141,6 +148,7 @@ async function startServer() {
     // 2. Iniciar Express
     app.listen(PORT, () => {
     console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+    
     console.log(`CivitasPay Backend iniciado`);
     console.log(`Entorno: ${process.env.NODE_ENV}`);
     console.log(`Puerto: ${PORT}`);
@@ -155,6 +163,7 @@ async function startServer() {
     console.log(`Subcontratos: http://localhost:${PORT}${API_PREFIX}/obras/:obraId/subcontratos`);
     console.log(`Caja Chica:   http://localhost:${PORT}${API_PREFIX}/obras/:obraId/caja-chica`);
     console.log(`Fondo Garantía: http://localhost:${PORT}${API_PREFIX}/obras/:obraId/fondo-garantia`);
+    console.log(`Cierres: http://localhost:${PORT}${API_PREFIX}/obras/:obraId/cierres`);
 
     console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
   });

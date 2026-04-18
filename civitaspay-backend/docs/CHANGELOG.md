@@ -879,3 +879,53 @@ ACTIVO → LIQUIDADO (automático al completar pagos)
 - Fondo acumulado $8,620.69 (5% de estimación $200,000) ✅
 - Liberación parcial $5,000 → saldo $3,620.69 ✅
 - Validación exceso: $99,999 > $3,620.69 rechazado ✅
+
+
+## [1.9.0] - 2026-04-18
+
+### 🎉 FASE 9: Módulo de Cierres Mensuales Completada
+
+#### ✨ Features Añadidas
+
+##### Cierre Mensual Contable
+- Congela el estado financiero de un período YYYY-MM
+- Snapshot inmutable de categorías (asignado vs gastado)
+- Snapshot del fondo de garantía al momento del cierre
+- Un solo cierre permitido por período por obra
+
+##### Vista Previa (Previsualización)
+- Endpoint dedicado para ver qué datos quedarán congelados
+- Muestra advertencia si no hay movimientos en el período
+- No guarda nada — solo consulta
+
+##### Reapertura de Cierres
+- Solo Admin puede reabrir un cierre
+- Motivo obligatorio (mínimo 10 caracteres)
+- Un cierre solo puede reabrirse una vez
+- Registra: reabierto_por, reabierto_at, motivo_reapertura
+
+#### 📁 Archivos Creados
+- `src/repositories/cierres.repository.js`
+- `src/services/cierres.service.js`
+- `src/controllers/cierres.controller.js`
+- `src/routes/cierres.routes.js`
+
+#### 📝 Archivos Modificados
+- `server.js` — Registro de rutas de cierres
+
+#### 🌐 Endpoints Implementados (5 nuevos)
+
+| Método | Endpoint | Descripción | RBAC |
+|--------|----------|-------------|------|
+| GET | `/api/obras/:obraId/cierres` | Listar cierres | Any |
+| GET | `/api/obras/:obraId/cierres/previsualizar/:periodo` | Vista previa | Any |
+| GET | `/api/obras/:obraId/cierres/:id` | Detalle del cierre | Any |
+| POST | `/api/obras/:obraId/cierres` | Ejecutar cierre | Admin |
+| PATCH | `/api/obras/:obraId/cierres/:id/reabrir` | Reabrir cierre | Admin |
+
+#### 📊 Verificado con Datos Reales
+- Previsualización período 2026-04: ingresos $163,793.10 ✅
+- Cierre ejecutado con snapshot de 3 categorías ✅
+- Validación período duplicado ✅
+- Reapertura con motivo registrada ✅
+- Validación formato incorrecto "abril-2026" rechazado ✅
