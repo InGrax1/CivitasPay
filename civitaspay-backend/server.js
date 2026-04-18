@@ -13,6 +13,7 @@ const estimacionesRoutes = require('./src/routes/estimaciones.routes');
 const gastosRoutes = require('./src/routes/gastos.routes');
 const reportesRoutes = require('./src/routes/reportes.routes');
 const subcontratosRoutes = require('./src/routes/subcontratos.routes');
+const cajaChicaRoutes = require('./src/routes/caja_chica.routes');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -81,6 +82,11 @@ obrasRouter.use('/:obraId/gastos', gastosRoutes);
 obrasRouter.use('/:obraId/subcontratos', subcontratosRoutes); 
 
 // =====================================================
+// RUTAS DE CAJA CHICA (anidadas bajo obras)
+// =====================================================
+obrasRouter.use('/:obraId/caja-chica', cajaChicaRoutes);
+
+// =====================================================
 // RUTAS DE REPORTES
 // =====================================================
 obrasRouter.use('/:obraId', reportesRoutes);
@@ -141,6 +147,7 @@ async function startServer() {
     console.log(`Gastos: http://localhost:${PORT}${API_PREFIX}/obras/:obraId/gastos`);
     console.log(`Dashboard: http://localhost:${PORT}${API_PREFIX}/obras/:obraId/dashboard`);
     console.log(`Subcontratos: http://localhost:${PORT}${API_PREFIX}/obras/:obraId/subcontratos`);
+    console.log(`Caja Chica:   http://localhost:${PORT}${API_PREFIX}/obras/:obraId/caja-chica`);
 
     console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
   });
