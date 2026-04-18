@@ -838,3 +838,44 @@ ACTIVO → LIQUIDADO (automático al completar pagos)
 - Validación límite máximo (máximo a reponer: $5,350) ✅
 - Desactivación de caja ✅
 
+## [1.8.0] - 2026-04-17
+
+### 🎉 FASE 8: Módulo de Fondo de Garantía Completada
+
+#### ✨ Features Añadidas
+
+##### Fondo de Garantía por Obra
+- Una sola fila por obra que acumula todas las retenciones
+- Se crea automáticamente al primer acceso si no existe
+- El trigger de MySQL lo alimenta al aprobar estimaciones
+
+##### Consulta del Fondo
+- Saldo acumulado actual con porcentaje de retención de la obra
+- Historial completo de estimaciones aprobadas con su retención individual
+- Resumen: total estimaciones, total retenido histórico, saldo disponible
+
+##### Liberación de Fondos
+- Liberación parcial o total del fondo
+- Validación: monto liberado no puede exceder el saldo acumulado
+- Solo Admin puede liberar fondos
+
+#### 📁 Archivos Creados
+- `src/repositories/fondo_garantia.repository.js`
+- `src/services/fondo_garantia.service.js`
+- `src/controllers/fondo_garantia.controller.js`
+- `src/routes/fondo_garantia.routes.js`
+
+#### 📝 Archivos Modificados
+- `server.js` — Registro de rutas de fondo de garantía
+
+#### 🌐 Endpoints Implementados (2 nuevos)
+
+| Método | Endpoint | Descripción | RBAC |
+|--------|----------|-------------|------|
+| GET | `/api/obras/:obraId/fondo-garantia` | Ver estado del fondo | Any |
+| POST | `/api/obras/:obraId/fondo-garantia/liberar` | Liberar fondos | Admin |
+
+#### 📊 Verificado con Datos Reales
+- Fondo acumulado $8,620.69 (5% de estimación $200,000) ✅
+- Liberación parcial $5,000 → saldo $3,620.69 ✅
+- Validación exceso: $99,999 > $3,620.69 rechazado ✅
