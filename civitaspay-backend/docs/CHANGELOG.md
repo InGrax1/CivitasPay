@@ -785,3 +785,56 @@ ACTIVO → LIQUIDADO (automático al completar pagos)
 - Subcontrato $85,000 → Anticipo $30,000 → Pago final $55,000 → LIQUIDADO ✅
 - Validación de pago excedente funcionando ✅
 - Cambio de estado ACTIVO → PAUSADO ✅
+
+
+## [1.7.0] - 2026-04-17
+
+### 🎉 FASE 7: Módulo de Caja Chica Completada
+
+#### ✨ Features Añadidas
+
+##### Gestión de Caja Chica
+- Creación de caja chica por obra con límite máximo configurable
+- Saldo en tiempo real actualizado con cada movimiento
+- Activar/desactivar caja (no se puede operar si está inactiva)
+
+##### Tres Tipos de Movimientos
+- **REPOSICION** — Entrada de dinero. Validación: no excede el límite máximo
+- **GASTO** — Salida de dinero. Validación: saldo suficiente disponible
+- **AJUSTE** — Corrección por arqueo (puede ser positivo o negativo). Solo Admin
+
+##### Historial de Movimientos
+- Cada movimiento registra `saldo_anterior` y `saldo_nuevo`
+- Trazabilidad completa del flujo de dinero
+- Últimos 20 movimientos en el detalle de la caja
+
+#### 📁 Archivos Creados
+- `src/repositories/caja_chica.repository.js`
+- `src/services/caja_chica.service.js`
+- `src/controllers/caja_chica.controller.js`
+- `src/routes/caja_chica.routes.js`
+
+#### 📝 Archivos Modificados
+- `server.js` — Registro de rutas anidadas de caja chica
+
+#### 🌐 Endpoints Implementados (7 nuevos)
+
+| Método | Endpoint | Descripción | RBAC |
+|--------|----------|-------------|------|
+| GET | `/api/obras/:obraId/caja-chica` | Listar cajas | Any |
+| GET | `/api/obras/:obraId/caja-chica/:id` | Detalle + movimientos | Any |
+| POST | `/api/obras/:obraId/caja-chica` | Crear caja | Admin |
+| POST | `/api/obras/:obraId/caja-chica/:id/reposicion` | Reponer fondos | Any |
+| POST | `/api/obras/:obraId/caja-chica/:id/gasto` | Registrar gasto | Any |
+| POST | `/api/obras/:obraId/caja-chica/:id/ajuste` | Ajuste de arqueo | Admin |
+| PATCH | `/api/obras/:obraId/caja-chica/:id/toggle` | Activar/desactivar | Admin |
+
+#### 📊 Verificado con Datos Reales
+- Creación con límite $10,000 ✅
+- Reposición $5,000 → saldo $5,000 ✅
+- Gasto $350 → saldo $4,650 ✅
+- Ajuste -$50 → saldo $4,600 ✅
+- Validación saldo insuficiente ($9,999 > $4,650) ✅
+- Validación límite máximo (máximo a reponer: $5,350) ✅
+- Desactivación de caja ✅
+
