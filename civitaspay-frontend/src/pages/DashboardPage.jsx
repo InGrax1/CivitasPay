@@ -188,6 +188,7 @@ function DashboardPage() {
                   innerRadius={45}
                   outerRadius={70}
                   dataKey="valor"
+                  nameKey="nombre"
                 >
                   {datosPie.map((_, i) => (
                     <Cell key={i} fill={COLORES_PIE[i % COLORES_PIE.length]} />

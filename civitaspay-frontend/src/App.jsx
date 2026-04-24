@@ -4,7 +4,7 @@ import { Toaster } from 'react-hot-toast';
 import useAuthStore from './store/authStore';
 import AppLayout from './components/layout/AppLayout';
 import DashboardPage from './pages/DashboardPage';
-
+import ObrasPage from './pages/ObrasPage';
 
 // Páginas — las iremos creando una por una
 import LoginPage from './pages/LoginPage';
@@ -54,7 +54,7 @@ function App() {
           >
             <Route index element={<Navigate to="/dashboard" replace />} />
             <Route path="dashboard" element={<DashboardPage />} />
-            <Route path="obras"          element={<Placeholder nombre="Obras" />} />
+            <Route path="obras" element={<ObrasPage />} />
             <Route path="contratos"      element={<Placeholder nombre="Contratos" />} />
             <Route path="gastos"         element={<Placeholder nombre="Gastos" />} />
             <Route path="estimaciones"   element={<Placeholder nombre="Estimaciones" />} />
