@@ -7,6 +7,8 @@ import DashboardPage from './pages/DashboardPage';
 import ObrasPage from './pages/ObrasPage';
 import GastosPage from './pages/GastosPage';
 import EstimacionesPage from './pages/EstimacionesPage';
+import CajaChicaPage from './pages/CajaChicaPage';
+
 
 // Páginas — las iremos creando una por una
 import LoginPage from './pages/LoginPage';
@@ -60,7 +62,7 @@ function App() {
             <Route path="contratos"      element={<Placeholder nombre="Contratos" />} />
             <Route path="gastos" element={<GastosPage />} />
             <Route path="estimaciones" element={<EstimacionesPage />} />
-            <Route path="caja-chica"     element={<Placeholder nombre="Caja Chica" />} />
+            <Route path="caja-chica" element={<CajaChicaPage />} />
             <Route path="gasto-personal" element={<Placeholder nombre="Gasto Personal" />} />
             <Route path="personal"       element={<Placeholder nombre="Personal" />} />
             <Route path="config"         element={<Placeholder nombre="Configuración" />} />
