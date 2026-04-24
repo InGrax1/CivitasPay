@@ -5,14 +5,14 @@ import { useQuery } from '@tanstack/react-query';
 import api from '../../api/axios.config';
 import Button from '../ui/Button';
 
-function GastoForm({ obraId, onClose }) {
+function GastoForm({ obraId, onClose, personalPorDefecto = false }) {
   const [form, setForm] = useState({
     categoria_id: '',
     monto: '',
     fecha_gasto: new Date().toISOString().split('T')[0],
     proveedor: '',
     concepto: '',
-    is_personal: false,
+    is_personal: personalPorDefecto,
   });
 
   const crearGasto = useCrearGasto(obraId);

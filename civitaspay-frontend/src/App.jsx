@@ -8,7 +8,8 @@ import ObrasPage from './pages/ObrasPage';
 import GastosPage from './pages/GastosPage';
 import EstimacionesPage from './pages/EstimacionesPage';
 import CajaChicaPage from './pages/CajaChicaPage';
-
+import GastoPersonalPage from './pages/GastoPersonalPage';
+import ContratosPage from './pages/ContratosPage';
 
 // Páginas — las iremos creando una por una
 import LoginPage from './pages/LoginPage';
@@ -59,11 +60,11 @@ function App() {
             <Route index element={<Navigate to="/dashboard" replace />} />
             <Route path="dashboard" element={<DashboardPage />} />
             <Route path="obras" element={<ObrasPage />} />
-            <Route path="contratos"      element={<Placeholder nombre="Contratos" />} />
+            <Route path="contratos" element={<ContratosPage />} />
             <Route path="gastos" element={<GastosPage />} />
             <Route path="estimaciones" element={<EstimacionesPage />} />
             <Route path="caja-chica" element={<CajaChicaPage />} />
-            <Route path="gasto-personal" element={<Placeholder nombre="Gasto Personal" />} />
+            <Route path="gasto-personal" element={<GastoPersonalPage />} />
             <Route path="personal"       element={<Placeholder nombre="Personal" />} />
             <Route path="config"         element={<Placeholder nombre="Configuración" />} />
           </Route>
