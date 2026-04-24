@@ -6,7 +6,7 @@ import AppLayout from './components/layout/AppLayout';
 import DashboardPage from './pages/DashboardPage';
 import ObrasPage from './pages/ObrasPage';
 import GastosPage from './pages/GastosPage';
-
+import EstimacionesPage from './pages/EstimacionesPage';
 
 // Páginas — las iremos creando una por una
 import LoginPage from './pages/LoginPage';
@@ -59,7 +59,7 @@ function App() {
             <Route path="obras" element={<ObrasPage />} />
             <Route path="contratos"      element={<Placeholder nombre="Contratos" />} />
             <Route path="gastos" element={<GastosPage />} />
-            <Route path="estimaciones"   element={<Placeholder nombre="Estimaciones" />} />
+            <Route path="estimaciones" element={<EstimacionesPage />} />
             <Route path="caja-chica"     element={<Placeholder nombre="Caja Chica" />} />
             <Route path="gasto-personal" element={<Placeholder nombre="Gasto Personal" />} />
             <Route path="personal"       element={<Placeholder nombre="Personal" />} />
