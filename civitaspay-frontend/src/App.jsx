@@ -3,6 +3,8 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Toaster } from 'react-hot-toast';
 import useAuthStore from './store/authStore';
 import AppLayout from './components/layout/AppLayout';
+import DashboardPage from './pages/DashboardPage';
+
 
 // Páginas — las iremos creando una por una
 import LoginPage from './pages/LoginPage';
@@ -51,7 +53,7 @@ function App() {
             }
           >
             <Route index element={<Navigate to="/dashboard" replace />} />
-            <Route path="dashboard"      element={<Placeholder nombre="Dashboard" />} />
+            <Route path="dashboard" element={<DashboardPage />} />
             <Route path="obras"          element={<Placeholder nombre="Obras" />} />
             <Route path="contratos"      element={<Placeholder nombre="Contratos" />} />
             <Route path="gastos"         element={<Placeholder nombre="Gastos" />} />

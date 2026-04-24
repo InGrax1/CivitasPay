@@ -22,6 +22,20 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const API_PREFIX = process.env.API_PREFIX || '/api';
 
+
+// =====================================================
+// CORS — Permite peticiones desde el frontend
+// =====================================================
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', 'http://localhost:5173');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  if (req.method === 'OPTIONS') {
+    return res.sendStatus(200);
+  }
+  next();
+});
+
 // =====================================================
 // MIDDLEWARE GLOBALES
 // =====================================================

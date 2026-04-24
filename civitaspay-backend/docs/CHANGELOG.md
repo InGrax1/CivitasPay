@@ -203,7 +203,7 @@ DB_NAME=civitaspay
 JWT_SECRET=********
 
 # CORS
-CORS_ORIGIN=http://localhost:4200
+CORS_ORIGIN=http://localhost:5173
 ```
 
 ### Dependencias Instaladas

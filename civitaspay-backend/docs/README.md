@@ -179,7 +179,7 @@ DB_NAME=civitaspay
 JWT_SECRET=tu_clave_secreta_generada_con_openssl
 
 # CORS
-CORS_ORIGIN=http://localhost:4200
+CORS_ORIGIN=http://localhost:5173
 ```
 
 **⚠️ SEGURIDAD:** Nunca subir el archivo `.env` a Git. Está incluido en `.gitignore`.

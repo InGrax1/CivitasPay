@@ -131,7 +131,7 @@ DB_NAME=civitaspay
 
 JWT_SECRET=genera_uno_con_openssl_rand_base64_32
 
-CORS_ORIGIN=http://localhost:4200
+CORS_ORIGIN=http://localhost:5173
 ```
 
 ---
