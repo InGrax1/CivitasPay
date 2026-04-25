@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Plus, ShoppingCart, FileText, FilePlus,
@@ -14,6 +15,7 @@ import ObraCard from '../components/obras/ObraCard';
 import Spinner from '../components/ui/Spinner';
 import { formatCurrencyCompact } from '../utils/formatCurrency';
 import useObraStore from '../store/obraStore';
+import ObraForm from '../components/obras/ObraForm';
 
 // ── Colores para el donut chart ───────────────────────────
 const COLORES_PIE = ['#5B7FE8', '#2DC653', '#F5A623', '#A78BFA'];
@@ -40,6 +42,7 @@ const datosPie = [
 function DashboardPage() {
   const navigate   = useNavigate();
   const seleccionarObra = useObraStore((s) => s.seleccionarObra);
+  const [modalObra, setModalObra] = useState(false);
 
   // Cargar obras desde el backend
   const { data: obras = [], isLoading } = useQuery({
@@ -56,7 +59,7 @@ function DashboardPage() {
 
   // ── Botones de acción rápida ──────────────────────────────
   const acciones = [
-    { label: 'Nueva Obra',          icono: Plus,        color: 'bg-civitas-blue text-white',          onClick: () => navigate('/obras') },
+    { label: 'Nueva Obra',          icono: Plus,        color: 'bg-civitas-blue text-white',          onClick: () => setModalObra(true) },
     { label: 'Registrar Gasto',     icono: ShoppingCart, color: 'bg-green-500 text-white',            onClick: () => navigate('/gastos') },
     { label: 'Registrar Estimación',icono: FileText,    color: 'bg-purple-500 text-white',            onClick: () => navigate('/estimaciones') },
     { label: 'Nuevo Contrato',      icono: FilePlus,    color: 'bg-orange-500 text-white',            onClick: () => navigate('/contratos') },
@@ -205,6 +208,8 @@ function DashboardPage() {
 
         </div>
       </div>
+      {modalObra && (
+        <ObraForm onClose={() => setModalObra(false)} />)}
     </div>
   );
 }

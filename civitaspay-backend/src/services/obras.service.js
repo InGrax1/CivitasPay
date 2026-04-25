@@ -5,6 +5,7 @@
 
 const obrasRepository = require('../repositories/obras.repository');
 const { v4: uuidv4 } = require('uuid');
+const { pool } = require('../config/database');
 
 /**
  * Obtener todas las obras de una empresa

@@ -5,6 +5,9 @@ import StatCard from '../components/ui/StatCard';
 import Badge from '../components/ui/Badge';
 import Spinner from '../components/ui/Spinner';
 import { formatCurrencyCompact } from '../utils/formatCurrency';
+import ObraForm from '../components/obras/ObraForm';
+import { useState } from 'react';
+
 import {
   LineChart, Line, XAxis, YAxis, Tooltip,
   Legend, ResponsiveContainer,
@@ -13,6 +16,8 @@ import {
 function ObrasPage() {
   const { obraSeleccionada } = useObraStore();
   const { data: dashboard, isLoading } = useObraDashboard(obraSeleccionada?.id);
+    const [modalEditar, setModalEditar] = useState(false);
+
 
   if (!obraSeleccionada) {
     return (
@@ -56,7 +61,9 @@ function ObrasPage() {
             <FileText size={14} />
             <span>Registrar Estimaciones</span>
           </button>
-          <button className="p-2 rounded-xl bg-white border border-gray-200 text-gray-500 hover:bg-gray-50 transition-colors">
+          <button
+            onClick={() => setModalEditar(true)}
+            className="p-2 rounded-xl bg-white border border-gray-200 text-gray-500 hover:bg-gray-50 transition-colors">
             <Settings size={16} />
           </button>
         </div>
@@ -258,6 +265,11 @@ function ObrasPage() {
 
         </div>
       </div>
+      {modalEditar && (
+        <ObraForm
+        obra={obraSeleccionada}
+        onClose={() => setModalEditar(false)}
+        />)}
     </div>
   );
 }
