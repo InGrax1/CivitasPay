@@ -7,6 +7,8 @@ import Spinner from '../components/ui/Spinner';
 import { formatCurrencyCompact } from '../utils/formatCurrency';
 import ObraForm from '../components/obras/ObraForm';
 import { useState } from 'react';
+import { useFondoGarantia } from '../hooks/useFondoGarantia';
+
 
 import {
   LineChart, Line, XAxis, YAxis, Tooltip,
@@ -16,7 +18,8 @@ import {
 function ObrasPage() {
   const { obraSeleccionada } = useObraStore();
   const { data: dashboard, isLoading } = useObraDashboard(obraSeleccionada?.id);
-    const [modalEditar, setModalEditar] = useState(false);
+  const [modalEditar, setModalEditar] = useState(false);
+  const { data: fondo } = useFondoGarantia(obraSeleccionada?.id);
 
 
   if (!obraSeleccionada) {
@@ -260,6 +263,44 @@ function ObrasPage() {
               <p className="text-xs font-medium text-gray-700">
                 {obraSeleccionada.residente_id ?? 'Sin residente asignado'}
               </p>
+            </div>
+          </div>
+
+          {/* Fondo de Garantía */}
+          <div className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
+            <p className="text-sm font-semibold text-gray-700 mb-3 flex items-center gap-1.5">
+              🔒 Fondo de Garantía
+            </p>
+
+            <div className="flex flex-col gap-2">
+              <div className="flex justify-between items-center">
+                <p className="text-xs text-gray-400">Saldo Acumulado</p>
+                <p className="text-lg font-bold text-civitas-blue">
+                  {formatCurrencyCompact(fondo?.fondo?.saldo_acumulado ?? 0)}
+                </p>
+              </div>
+
+              <div className="flex justify-between items-center">
+                <p className="text-xs text-gray-400">% Retención</p>
+                <p className="text-xs font-medium text-gray-600">
+                  {fondo?.fondo?.porcentaje_retencion ?? 0}%
+                </p>
+              </div>
+
+              <div className="flex justify-between items-center">
+                <p className="text-xs text-gray-400">Estimaciones aprobadas</p>
+                <p className="text-xs font-medium text-gray-600">
+                  {fondo?.resumen?.total_estimaciones_aprobadas ?? 0}
+                </p>
+              </div>
+
+              <div className="h-px bg-gray-100 my-1" />
+
+              <div className="bg-civitas-blue-pale rounded-xl p-2.5">
+                <p className="text-xs text-civitas-blue text-center">
+                  💡 Solo lectura — liberación disponible en Fase 2
+                </p>
+              </div>
             </div>
           </div>
 
