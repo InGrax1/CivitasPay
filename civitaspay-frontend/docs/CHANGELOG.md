@@ -8,16 +8,108 @@ Todos los cambios notables en este proyecto serán documentados en este archivo.
 
 | Métrica | Valor |
 |---------|-------|
-| **Versión** | 0.12.0 |
-| **Progreso General** | 90% |
+| **Versión** | 0.14.0 |
+| **Progreso General** | 95% |
 | **Páginas implementadas** | 11 / 11 |
 | **Módulos conectados al backend** | 10 |
 | **PWA** | ✅ Completado |
-| **Offline / Dexie** | Pendiente |
-| **Tests** | Pendiente |
+| **Tests** | ✅ 61 tests — 0 fallos |
+| **Roles en sidebar** | ✅ Completado |
+| **Offline / Dexie** | Pendiente (a confirmacion de cliente) |
+| **Deploy** | Pendiente |
+```
 
 ---
 
+
+```md
+## [0.14.0] — Roles en Sidebar y Protección de Rutas
+
+### ✨ Features Añadidas
+
+#### Sidebar dinámico por rol
+- Menú filtrado según el rol del usuario autenticado
+- Administrador: ve todos los módulos
+- Auxiliar: ve Menú, Obras, Contratos, Finanzas — sin Personal ni Config
+- Residente: redirige automáticamente a `/sin-acceso`
+- Rol del usuario visible debajo del logo en el sidebar
+
+#### Protección de rutas
+- `ProtectedRoute` actualizado: redirige Residentes a `/sin-acceso`
+- `SoloAdmin`: componente que protege rutas exclusivas de Admin
+- Rutas `/personal` y `/config` protegidas con `SoloAdmin`
+- Página `/sin-acceso` con botón de cerrar sesión
+
+### 🔧 Archivos Modificados
+```
+src/components/layout/Sidebar.jsx — navItems dinámicos por rol
+src/App.jsx — SoloAdmin + ProtectedRoute actualizado + ruta /sin-acceso
+```
+
+---
+
+```
+## [0.13.0] — Tests con Vitest
+
+### ✨ Tests Implementados
+
+#### Nivel 1 — Utilidades (25 tests)
+- `formatCurrency` — 8 tests: enteros, decimales, cero, negativos, símbolo
+- `formatDate` — 8 tests: fechas válidas, nulos, undefined, formato YYYY-MM-DD
+- `financialMath` — 9 tests: IVA, base, distribución por categoría, costo directo
+
+#### Nivel 2 — Componentes UI (21 tests)
+- `Button` — 8 tests: variants, loading, disabled, onClick, type submit
+- `Badge` — 6 tests: estados ACTIVA, PAUSADA, TERMINADA, BORRADOR, APROBADA, desconocido
+- `ConfirmDeleteModal` — 7 tests: título, nombre, botón deshabilitado, validación exacta, onConfirm, onClose
+
+#### Nivel 3 — Hooks (15 tests)
+- `useAuth` — 5 tests: estado inicial, login, logout, rol guardado
+- `useObras` — 5 tests: lista real, array vacío, error de red, dashboard, query deshabilitada sin obraId
+- `usePersonal` — 5 tests: lista usuarios, filtro admins, filtro residentes, límite 5 admins, error
+
+### 📊 Resultado Final
+```
+Test Files  9 passed (9)
+Tests       61 passed (61)
+```
+
+### 🔧 Archivos Creados
+```
+src/test/setup.js
+src/test/utils/formatCurrency.test.js
+src/test/utils/formatDate.test.js
+src/test/utils/financialMath.test.js
+src/test/components/Button.test.jsx
+src/test/components/Badge.test.jsx
+src/test/components/ConfirmDeleteModal.test.jsx
+src/test/hooks/useAuth.test.jsx
+src/test/hooks/useObras.test.jsx
+src/test/hooks/usePersonal.test.jsx
+src/utils/formatDate.js
+src/utils/financialMath.js
+```
+
+### 📦 Dependencias Añadidas
+```
+vitest
+@testing-library/react
+@testing-library/jest-dom
+@testing-library/user-event
+@testing-library/dom
+jsdom
+```
+
+### ⚙️ Scripts Añadidos
+```
+"test":     "vitest"
+"test:run": "vitest run"
+"test:ui":  "vitest --ui"
+"coverage": "vitest run --coverage"
+```
+```
+
+```
 ## [0.12.0] — PWA
 
 ### ✨ Features Añadidas
