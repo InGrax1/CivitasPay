@@ -928,3 +928,53 @@ ACTIVO → LIQUIDADO (automático al completar pagos)
 - Validación período duplicado ✅
 - Reapertura con motivo registrada ✅
 - Validación formato incorrecto "abril-2026" rechazado ✅
+
+
+## [2.0.0]
+
+### 🎉 FASE FRONTEND: Endpoints de Personal (Gestión de Usuarios)
+
+#### ✨ Features Añadidas
+
+##### Gestión de Usuarios de la Empresa
+- Listar todos los usuarios de la empresa (Administradores, Auxiliares y Residentes)
+- Crear usuarios con validación de rol y contraseña
+- Residentes no requieren contraseña — se genera una genérica automáticamente
+- Actualizar datos de usuarios (nombre, email, teléfono, rol, estado activo)
+- Soft delete de usuarios
+- **Límite de 5 Administradores por empresa** — validado en el service
+
+##### Reglas de Negocio
+- ADMINISTRADOR: máximo 5 por empresa
+- AUXILIAR: sin límite, requiere contraseña mínimo 8 caracteres
+- RESIDENTE: sin límite, sin contraseña (no tiene acceso al sistema)
+- Solo el rol ADMINISTRADOR puede acceder a estos endpoints (soloAdmin middleware)
+
+#### 📁 Archivos Creados
+- `src/repositories/usuarios_admin.repository.js`
+- `src/services/usuarios_admin.service.js`
+- `src/controllers/usuarios_admin.controller.js`
+- `src/routes/usuarios_admin.routes.js`
+
+#### 📝 Archivos Modificados
+- `server.js` — Registro de ruta `/api/personal`
+
+#### 🌐 Endpoints Implementados (4 nuevos)
+
+| Método | Endpoint | Descripción | RBAC |
+|--------|----------|-------------|------|
+| GET | `/api/personal` | Listar usuarios de la empresa | Admin |
+| POST | `/api/personal` | Crear usuario (Admin/Auxiliar/Residente) | Admin |
+| PUT | `/api/personal/:id` | Actualizar datos del usuario | Admin |
+| DELETE | `/api/personal/:id` | Eliminar usuario (soft delete) | Admin |
+
+#### 🧪 Pruebas Ejecutadas
+
+```
+✅ GET /api/personal — Lista usuarios correctamente
+✅ POST /api/personal — Crea Auxiliar con password
+✅ POST /api/personal — Crea Residente sin password
+✅ PUT /api/personal/:id — Actualiza datos del usuario
+✅ DELETE /api/personal/:id — Soft delete correcto
+✅ Límite de 5 Admins — Error controlado al intentar crear el 6to
+```
