@@ -16,7 +16,7 @@ const subcontratosRoutes = require('./src/routes/subcontratos.routes');
 const cajaChicaRoutes = require('./src/routes/caja_chica.routes');
 const fondoGarantiaRoutes = require('./src/routes/fondo_garantia.routes');
 const cierresRoutes = require('./src/routes/cierres.routes');
-
+const usuariosAdminRoutes = require('./src/routes/usuarios_admin.routes');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -64,6 +64,10 @@ app.get('/health', (req, res) => {
     timestamp: new Date().toISOString()
   });
 });
+// =====================================================
+// RUTAS DE PERSONAL (Usuarios de la empresa)
+// =====================================================
+app.use(`${API_PREFIX}/personal`, usuariosAdminRoutes);
 
 // =====================================================
 // RUTAS DE AUTENTICACIÓN
