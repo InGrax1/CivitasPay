@@ -1,98 +1,397 @@
 # Changelog — CivitasPay Frontend
 
+Todos los cambios notables en este proyecto serán documentados en este archivo.
+
 ---
 
-## [0.0.0] — FASE 0: Setup e Infraestructura _(Pendiente)_
+## Estado Actual del Proyecto
 
-### ⚙️ Configuraciones
-- Proyecto creado con Vite 5 + React 18 (`npm create vite@latest`)
-- Tailwind CSS 3 configurado con tokens de diseño de CivitasPay
-- postcss + autoprefixer configurados
-- ESLint + Prettier configurados con reglas de React
-- vite-plugin-pwa configurado con manifest básico
-- Variables de entorno en `.env` y `.env.example`
-- `.gitignore` completo para Node.js + Vite
-- Estructura de carpetas completa creada
+| Métrica | Valor |
+|---------|-------|
+| **Versión** | 0.12.0 |
+| **Progreso General** | 90% |
+| **Páginas implementadas** | 11 / 11 |
+| **Módulos conectados al backend** | 10 |
+| **PWA** | ✅ Completado |
+| **Offline / Dexie** | Pendiente |
+| **Tests** | Pendiente |
 
-### 📦 Dependencias Instaladas
+---
 
-**Producción:**
-- react@18.3, react-dom@18.3
-- react-router-dom@6
-- zustand@4 (con middleware persist)
-- @tanstack/react-query@5
-- axios@1
-- recharts@2
-- lucide-react
-- react-hook-form@7
-- @hookform/resolvers
-- zod@3
-- dexie@3
-- react-hot-toast@2
+## [0.12.0] — PWA
 
-**Desarrollo:**
-- vite@5
-- @vitejs/plugin-react
-- vite-plugin-pwa
-- tailwindcss@3 + postcss + autoprefixer
-- eslint + eslint-plugin-react + eslint-plugin-react-hooks
-- prettier
+### ✨ Features Añadidas
+- Íconos generados automáticamente desde `public/logo.svg` con `@vite-pwa/assets-generator`
+- App instalable en desktop (Chrome) y móvil
+- Service Worker con estrategia **NetworkFirst** para `/api/*`
+- Service Worker con estrategia **CacheFirst** para assets estáticos
+- Manifest configurado: nombre, descripción, colores, display standalone, orientación portrait
 
-### 🔧 Scripts Configurados
-```json
-"scripts": {
-  "dev":     "vite",
-  "build":   "vite build",
-  "preview": "vite preview",
-  "lint":    "eslint src --ext .js,.jsx",
-  "format":  "prettier --write src/"
-}
+### 📁 Archivos Generados en `public/`
+```
+pwa-64x64.png
+pwa-192x192.png
+pwa-512x512.png
+maskable-icon-512x512.png
+apple-touch-icon-180x180.png
+favicon.ico
 ```
 
-### ✅ Verificaciones
-- `npm run dev` → abre sin errores en `http://localhost:5173`
-- `npm run build` → genera `dist/` con `sw.js` (Service Worker)
-- Tailwind funcionando con clase de prueba
-- Variables de entorno accesibles en el código
+### 🔧 Archivos Modificados
+```
+vite.config.js       — VitePWA plugin con manifest y workbox
+index.html           — meta theme-color + links de íconos PWA
+pwa-assets.config.js — configuración del generador de íconos
+```
+
+### 📦 Dependencias Añadidas
+```
+@vite-pwa/assets-generator (dev) — generador de íconos desde SVG
+```
 
 ---
 
-## [0.1.0] — FASE 1: Core — Auth + Layout + Routing _(Pendiente)_
+## [0.11.0] — Configuración
 
 ### ✨ Features Añadidas
 
-#### Sistema de Autenticación Completo
-- `LoginPage`: glassmorphism card sobre fondo de edificios con overlay cian
-- `authStore` (Zustand + persist): guarda tokens en localStorage
-- Axios con interceptores JWT: access token automático en headers
-- Refresh token automático: renueva el access token antes de expirar
-- Logout completo: limpia store + localStorage + redirige
-- `ProtectedRoute`: guarda todas las rutas internas
+#### ConfigPage
+- **Sección 1 — Configuración Fiscal:**
+  - IVA configurable (default 16%) con preview en tiempo real
+  - Ejemplo automático: $100,000 bruto → Base + IVA calculados dinámicamente
+  - Redondeo financiero: 0, 2, 4 o 6 decimales
+  - Selector de moneda: MXN, USD, EUR
+- **Sección 2 — Períodos Contables:**
+  - Tipo de período: Semanal, Quincenal, Mensual, Personalizado
+  - Semanal: selector del día de inicio (Lunes–Domingo)
+  - Quincenal: días de corte configurables (ej: 1 y 16)
+  - Personalizado: número de días por período
+  - Preview del período actual y siguiente en tiempo real
+  - Sin restricción de mes — una semana del lun 28 al dom 4 es válida aunque cruce dos meses
+- Guardar en `localStorage` con clave `civitaspay-config`
+- Botón "Restaurar" regresa a valores por defecto
 
-#### Layout Principal
-- `Sidebar`: navegación colapsable con todas las secciones (Menú/Obras/Finanzas/Personal/Config)
-- `Topbar`: barra superior con `ObraSelector` y controles de usuario
-- `ObraSelector`: dropdown que selecciona la obra activa globalmente (persiste en sessionStorage)
-- `AppLayout`: contenedor Sidebar + Topbar + `<Outlet />` para páginas
+### 🔧 Archivos Creados
+```
+src/pages/ConfigPage.jsx
+```
 
-#### Routing Completo
-- Todas las rutas definidas con sus páginas placeholder
-- Rutas protegidas que redirigen a `/login` si no hay sesión
-- Ruta raíz `/` redirige a `/dashboard`
-- `Navigate` para rutas no encontradas
+---
 
-#### Componentes UI Base
-- `Button`: variants primary/secondary/danger/ghost + estado loading con spinner
-- `Input`: label + input estilizado + mensaje de error + ícono opcional
-- `Spinner`: indicador de carga centrado
+## [0.10.0] — Módulo Personal
 
-#### State Management
-- `authStore`: usuario + tokens + `isAuthenticated` (persistido)
-- `obraStore`: obra seleccionada globalmente (session)
+### ✨ Features Añadidas
 
-#### Hooks Base
-- `useAuth()`: `useLogin()`, `useLogout()`
-- `useNetwork()`: detección de conectividad online/offline
+#### PersonalPage (solo visible para Administradores)
+- 3 KPI Cards: Administradores (X/5), Auxiliares, Residentes
+- Tabla con: avatar, nombre, email, rol (ícono + color), teléfono, último acceso, estado
+- El Admin no puede eliminarse a sí mismo
+
+#### UsuarioForm (Modal)
+- Crear y Editar en el mismo componente
+- Campos: Nombre, Email, Teléfono, Rol, Contraseña
+- Si el rol es **RESIDENTE**: campo de contraseña desaparece automáticamente + aviso informativo
+- Si es edición: contraseña opcional + toggle de estado Activo/Inactivo
+
+#### Reglas de negocio
+- ADMINISTRADOR: máximo 5 por empresa (validado en backend y mostrado en frontend)
+- AUXILIAR: sin límite, requiere contraseña mínimo 8 caracteres
+- RESIDENTE: sin límite, sin acceso al sistema — solo figura de referencia en obras
+
+### 🔧 Archivos Creados
+```
+src/api/personal.api.js
+src/hooks/usePersonal.js
+src/pages/PersonalPage.jsx
+```
+
+### 📊 Endpoints Consumidos
+```
+GET    /api/personal
+POST   /api/personal
+PUT    /api/personal/:id
+DELETE /api/personal/:id
+```
+
+---
+
+## [0.9.0] — Fondo de Garantía en Panel de Obra
+
+### ✨ Features Añadidas
+- Tarjeta de Fondo de Garantía en la columna derecha de `ObrasPage`
+- Muestra: Saldo Acumulado, % de Retención, Estimaciones aprobadas
+- Aviso "Solo lectura — liberación disponible en Fase 2"
+
+### 🔧 Archivos Creados
+```
+src/api/fondoGarantia.api.js
+src/hooks/useFondoGarantia.js
+```
+
+### 📊 Endpoints Consumidos
+```
+GET /api/obras/:obraId/fondo-garantia
+```
+
+---
+
+## [0.8.0] — Eliminar Obra con Confirmación
+
+### ✨ Features Añadidas
+
+#### ObraCard — Botón Eliminar
+- Botón de eliminar aparece en hover sobre la ObraCard (solo Admin)
+- No navega a la obra — `e.stopPropagation()` aislado
+
+#### ConfirmDeleteModal (reutilizable)
+- Modal con ícono de advertencia y texto de impacto
+- El usuario debe escribir el nombre exacto de la obra para habilitar el botón
+- Reutilizado también en Módulo Personal
+
+### 🔧 Archivos Creados
+```
+src/components/ui/ConfirmDeleteModal.jsx
+```
+
+### 🔧 Archivos Modificados
+```
+src/components/obras/ObraCard.jsx — botón eliminar + hover + modal
+```
+
+---
+
+## [0.7.0] — Módulo Contratos
+
+### ✨ Features Añadidas
+
+#### ContratosPage
+- 3 KPI Cards: Total Contratado, Total Pagado, Total Pendiente
+- Grid responsive de `ContratoCard`
+- Botones pausar/reactivar contrato
+
+#### ContratoCard
+- Borde de color según estado: verde/amarillo/gris/rojo
+- Montos Contratado y Pagado
+- Barra de progreso con porcentaje de ejecución
+- Fechas inicio → fin
+
+#### Modales
+- Nuevo Contrato: Proveedor, Monto, Fechas, Concepto, Notas
+- Registrar Pago: Monto, Fecha, Método (Transferencia/Cheque/Efectivo/Otro)
+
+### 🔧 Archivos Creados
+```
+src/api/contratos.api.js
+src/hooks/useContratos.js
+src/components/contratos/ContratoCard.jsx
+src/pages/ContratosPage.jsx
+```
+
+### 📊 Endpoints Consumidos
+```
+GET    /api/obras/:obraId/subcontratos
+POST   /api/obras/:obraId/subcontratos
+POST   /api/obras/:obraId/subcontratos/:id/pagos
+PATCH  /api/obras/:obraId/subcontratos/:id/estado
+```
+
+---
+
+## [0.6.0] — Módulo Gasto Personal
+
+### ✨ Features Añadidas
+
+#### GastoPersonalPage
+- 3 KPI Cards: Total Gastado, Total Mensual, Categoría con más gastos
+- Tabla filtrada por `is_personal: true`
+- Donut chart de distribución por categoría
+- Al abrir GastoForm: toggle "Gasto Personal" activado por defecto
+
+### 🔧 Archivos Creados
+```
+src/pages/GastoPersonalPage.jsx
+```
+
+### 📊 Endpoints Consumidos
+```
+GET /api/obras/:obraId/gastos?is_personal=true
+GET /api/obras/:obraId/gastos/resumen/categorias
+```
+
+---
+
+## [0.5.0] — Módulo Caja Chica
+
+### ✨ Features Añadidas
+
+#### CajaChicaPage
+- KPI principal: Liquidez Total + Entrada/Salida mensual
+- Gauge semicircular SVG con color dinámico (verde/amarillo/rojo)
+- AreaChart de flujo semanal con series Entrada/Salida
+- Historial de movimientos con badge de estado
+- Si no hay caja: botón "Crear Caja Chica" (solo Admin)
+
+#### Modales
+- Reponer Fondos: monto + concepto
+- Registrar Gasto de Caja: monto + concepto
+- Crear Caja: nombre + límite máximo
+
+### 🔧 Archivos Creados
+```
+src/api/cajaChica.api.js
+src/hooks/useCajaChica.js
+src/pages/CajaChicaPage.jsx
+```
+
+### 📊 Endpoints Consumidos
+```
+GET  /api/obras/:obraId/caja-chica
+GET  /api/obras/:obraId/caja-chica/:id
+POST /api/obras/:obraId/caja-chica
+POST /api/obras/:obraId/caja-chica/:id/reposicion
+POST /api/obras/:obraId/caja-chica/:id/gasto
+```
+
+---
+
+## [0.4.0] — Módulo Estimaciones
+
+### ✨ Features Añadidas
+
+#### EstimacionesPage
+- 2 KPI Cards: Ingresos Totales Cobrados + Saldo Pendiente
+- Tabla con flujo de estados y botones RBAC
+
+#### Flujo de estados
+- Auxiliar: "Enviar a Revisión" (BORRADOR → EN_REVISION)
+- Admin: "Aprobar" (EN_REVISION → APROBADA)
+- Admin: "Marcar Cobrada" (APROBADA → COBRADA)
+- Solo Admin elimina estimaciones en BORRADOR
+
+#### EstimacionForm
+- Motor Financiero Preview en tiempo real al escribir el monto
+- Calcula: Base, IVA, Retención, distribución por categoría
+
+### 🔧 Archivos Creados
+```
+src/api/estimaciones.api.js
+src/hooks/useEstimaciones.js
+src/components/estimaciones/EstimacionForm.jsx
+src/pages/EstimacionesPage.jsx
+```
+
+### 📊 Endpoints Consumidos
+```
+GET    /api/obras/:obraId/estimaciones
+POST   /api/obras/:obraId/estimaciones
+PATCH  /api/obras/:obraId/estimaciones/:id/estado
+DELETE /api/obras/:obraId/estimaciones/:id
+```
+
+---
+
+## [0.3.0] — Módulo Gastos
+
+### ✨ Features Añadidas
+
+#### GastosPage
+- Filtros por tabs: Todos / MATERIALES / NOMINA / HERRAMIENTA / Personal
+- Selector de rango de fechas con accesos rápidos
+- Tabla con badge de categoría por color
+- Panel "Sumatoria Mensual" con desglose por categoría
+
+#### GastoForm
+- Categoría, Monto, Fecha, Proveedor, Concepto
+- Toggle "Gasto Personal" con aviso de advertencia
+- Prop `personalPorDefecto` para GastoPersonalPage
+
+### 🔧 Archivos Creados
+```
+src/api/gastos.api.js
+src/hooks/useGastos.js
+src/components/gastos/GastoForm.jsx
+src/pages/GastosPage.jsx
+```
+
+### 📊 Endpoints Consumidos
+```
+GET    /api/obras/:obraId/gastos
+GET    /api/obras/:obraId/gastos/resumen/categorias
+POST   /api/obras/:obraId/gastos
+DELETE /api/obras/:obraId/gastos/:id
+```
+
+---
+
+## [0.2.0] — Dashboard + Panel de Obra
+
+### ✨ Features Añadidas
+
+#### DashboardPage
+- 4 KPI Cards con datos reales del backend
+- Grid responsive de ObraCard
+- Gráfica de líneas y donut chart
+- Botones de acción rápida: Nueva Obra, Registrar Gasto, Estimación, Contrato
+
+#### ObrasPage (Panel de control)
+- 4 KPI Cards financieras con datos reales
+- Gráfica de distribución de costos
+- Tabla de estimaciones recientes
+- Columna derecha: Alertas, Transacciones, Ubicación, Residente, Fondo de Garantía
+
+#### ObraCard
+- Gradiente con inicial si no hay foto
+- Badge de estado con color dinámico
+- Barra de progreso con color según porcentaje
+
+#### ObraForm (Modal)
+- Crear y Editar en el mismo componente
+- Validación: porcentajes deben sumar exactamente 100%
+- En edición: aviso de impacto + selector de Estado
+
+### 🔧 Archivos Creados
+```
+src/api/obras.api.js
+src/hooks/useObras.js
+src/components/ui/StatCard.jsx
+src/components/ui/Badge.jsx
+src/components/obras/ObraCard.jsx
+src/components/obras/ObraForm.jsx
+src/pages/DashboardPage.jsx
+src/pages/ObrasPage.jsx
+```
+
+### 📊 Endpoints Consumidos
+```
+GET    /api/obras
+GET    /api/obras/:id/dashboard
+POST   /api/obras
+PUT    /api/obras/:id
+DELETE /api/obras/:id
+```
+
+---
+
+## [0.1.0] — Core: Auth + Layout + Routing
+
+### ✨ Features Añadidas
+
+#### Login
+- Fondo cian con texto gigante "CivitasPay" en transparencia
+- Card glassmorphism con backdrop-filter blur
+- Manejo de errores del backend con mensaje visible
+
+#### Layout
+- Sidebar con navegación y resaltado de ruta activa
+- Topbar con ObraSelector (carga obras reales)
+- AppLayout responsive: fijo en desktop, deslizable en móvil con overlay
+
+#### Auth
+- `authStore` (Zustand + persist): tokens + usuario
+- `obraStore` (Zustand + sessionStorage): obra seleccionada globalmente
+- Axios con interceptor JWT automático
+- Axios con interceptor refresh token al 401
+- ProtectedRoute
 
 ### 🔧 Archivos Creados
 ```
@@ -101,317 +400,38 @@ src/store/authStore.js
 src/store/obraStore.js
 src/hooks/useAuth.js
 src/hooks/useNetwork.js
-src/components/layout/AppLayout.jsx
-src/components/layout/Sidebar.jsx
-src/components/layout/Topbar.jsx
-src/components/layout/ObraSelector.jsx
 src/components/ui/Button.jsx
 src/components/ui/Input.jsx
 src/components/ui/Spinner.jsx
+src/components/layout/Sidebar.jsx
+src/components/layout/Topbar.jsx
+src/components/layout/AppLayout.jsx
 src/pages/LoginPage.jsx
-```
-
-### 🔐 Seguridad Implementada
-- JWT access token de 15 minutos
-- Refresh token de 7 días
-- Auto-refresh al detectar 401
-- Redireccionamiento automático a /login al expirar
-
-### 🧪 Tests
-```
-✅ Login exitoso → redirige a /dashboard
-✅ Credenciales incorrectas → muestra error en rojo
-✅ Sin token → ruta protegida redirige a /login
-✅ Token expirado → auto-refresh transparente
-✅ ObraSelector carga obras reales del backend
-✅ Logout limpia la sesión completamente
+src/App.jsx
+src/main.jsx
+src/index.css
 ```
 
 ### 📊 Endpoints Consumidos
-- `POST /api/auth/login`
-- `POST /api/auth/refresh`
-- `GET /api/auth/me`
-- `POST /api/auth/logout`
-- `GET /api/obras` (para el ObraSelector)
-
----
-
-## [0.2.0] — FASE 2: Módulo Obras + Dashboard _(Pendiente)_
-
-### ✨ Features Añadidas
-
-#### DashboardPage (Home Global)
-- 4 KPI Cards: Obras Activas, Presupuesto Total, Total Gastado, Estimaciones Cobradas
-- Grilla 2×3 de `ObraCard` con datos reales
-- Gráfica de distribución de gastos (líneas) columna derecha
-- Gráfica de distribución por herramienta (donut) columna derecha
-
-#### ObrasPage (Panel de Control de Obra)
-- 4 KPI Cards financieras: Costo del Contrato (con IVA), Costo Directo, Estimaciones Cobradas, Total Gastado c/d (con % y barra)
-- Distribución de costos: tabs + LineChart de Recharts
-- Tabla de estimaciones recientes
-- Panel derecho: Alertas + Transacciones recientes + Ubicación + Residente de Obra
-
-#### ObraCard
-- Imagen de obra con overlay de status
-- Nombre + Cliente
-- ProgressBar de presupuesto gastado
-- Badge de estado coloreado (Activo/En Revisión/Excedido/Pausado)
-- Botón "Detalles →" que selecciona la obra globalmente
-
-#### ObraForm (Modal)
-- Registrar Obra: campos completos según Figma
-- Editar Obra: mismos campos con datos precargados + aviso de impacto
-- Validación: porcentajes deben sumar exactamente 100%
-
-#### Componentes UI Nuevos
-- `StatCard`: ícono + título + valor + variación
-- `ProgressBar`: color dinámico por porcentaje
-- `Badge`: colores por tipo de estado
-- `DistribucionCostosChart`: LineChart con 3 series
-- `AlertasObra`: lista de alertas con íconos de severidad
-
-### 🔧 Archivos Creados
 ```
-src/api/obras.api.js
-src/hooks/useObras.js
-src/components/ui/StatCard.jsx
-src/components/ui/ProgressBar.jsx
-src/components/ui/Badge.jsx
-src/components/obras/ObraCard.jsx
-src/components/obras/ObraForm.jsx
-src/components/obras/AlertasObra.jsx
-src/components/charts/DistribucionCostosChart.jsx
-src/pages/DashboardPage.jsx
-src/pages/obras/ObrasPage.jsx
-```
-
-### 📊 Endpoints Consumidos
-- `GET /api/obras` → Lista de obras
-- `GET /api/obras/:id/dashboard` → Todos los datos financieros de la obra
-- `POST /api/obras` → Crear obra
-- `PUT /api/obras/:id` → Actualizar obra
-- `DELETE /api/obras/:id` → Soft delete (solo Admin)
-
----
-
-## [0.3.0] — FASE 3: Módulo Estimaciones _(Pendiente)_
-
-### ✨ Features Añadidas
-
-#### EstimacionesPage
-- 2 KPI Cards: Ingresos Totales Recaudados (con variación) + Saldo Pendiente
-- Botones: "Últimos 30 Días" + "Exportar" + "Registrar Estimaciones"
-- Tabla: Fecha, Concepto/Descripción, Estado (badge), Usuario, Monto
-- Paginación
-
-#### EstimacionForm (Modal)
-- Campos: Número de estimación (auto), Monto Bruto, Fecha, Proveedor/Vendedor, Categoría, FileUpload
-- **MotorFinancieroPreview**: se activa al ingresar el monto bruto y muestra en tiempo real el desglose completo sin llamar al backend
-
-#### MotorFinancieroPreview
-- Cálculo en tiempo real: IVA → Retención → Costo Directo → Distribución por categoría
-- Los porcentajes provienen de `obraStore` (obra actualmente seleccionada)
-- Se muestra solo cuando hay un monto ingresado
-
-#### Cambio de Estado (RBAC en UI)
-- Auxiliar ve botón: "Enviar a Revisión" (BORRADOR → EN_REVISION)
-- Admin ve botones: "Aprobar" (EN_REVISION → APROBADA) + "Marcar como Cobrada" (APROBADA → COBRADA)
-
-### 📊 Endpoints Consumidos
-- `GET /api/obras/:obraId/estimaciones`
-- `POST /api/obras/:obraId/estimaciones`
-- `PATCH /api/obras/:obraId/estimaciones/:id/estado`
-- `DELETE /api/obras/:obraId/estimaciones/:id` (solo Admin, solo BORRADOR)
-
----
-
-## [0.4.0] — FASE 4: Módulo Gastos _(Pendiente)_
-
-### ✨ Features Añadidas
-
-#### GastosPage
-- Filtros por tabs: Todos / Materiales / Mano de Obra / Herramienta / Personal
-- Tabla principal: Fecha, Concepto/Descripción, Categoría (badge), Usuario, Monto
-- Panel lateral "Sumatoria Mensual" con:
-  - Total Gastado + variación vs mes anterior
-  - Desglose por categoría con mini barras de colores
-
-#### GastoForm (Modal)
-- Campos: Categoría (dropdown), Monto, Fecha, Proveedor, Toggle "Gasto Personal", Concepto (textarea), Ticket de compra (FileUpload)
-- Banner de advertencia cuando el saldo de la categoría es bajo
-- `is_personal: true` cuando el toggle está activado
-
-#### Componentes UI Nuevos
-- Badge de categoría con colores diferenciados por tipo
-
-### 📊 Endpoints Consumidos
-- `GET /api/obras/:obraId/gastos?categoria_id=&fecha_desde=&fecha_hasta=`
-- `GET /api/obras/:obraId/gastos/resumen/categorias`
-- `POST /api/obras/:obraId/gastos`
-- `PUT /api/obras/:obraId/gastos/:id`
-- `DELETE /api/obras/:obraId/gastos/:id` (solo Admin)
-
----
-
-## [0.5.0] — FASE 5: Módulo Contratos _(Pendiente)_
-
-### ✨ Features Añadidas
-
-#### ContratosPage
-- Header con ObraSelector y botones de acción: "Nuevo Contrato" + "Registrar Pago"
-- Grid 3 columnas de `ContratoCard` con paginación
-
-#### ContratoCard
-- Título del contrato con color según estado:
-  - Verde → Activo
-  - Amarillo → Por Terminar
-  - Rojo → Terminado
-- Montos Contratado y Facturado
-- ProgressBar "Proceso de la Ejecución" con porcentaje
-- Fechas de inicio y fin con ícono de calendario
-- Badge de estado en la parte inferior
-
-#### Formulario "Nuevo Contrato"
-- Campos: Proveedor/Vendedor, Monto Bruto, Fecha Inicio/Fin, Nombre, Concepto, Categoría, FileUpload
-- Validación con Zod + React Hook Form
-
-### 📊 Endpoints Consumidos
-- `GET /api/obras/:obraId/subcontratos`
-- `POST /api/obras/:obraId/subcontratos`
-- `POST /api/obras/:obraId/subcontratos/:id/pagos`
-- `PATCH /api/obras/:obraId/subcontratos/:id/estado`
-
----
-
-## [0.6.0] — FASE 6: Módulo Caja Chica _(Pendiente)_
-
-### ✨ Features Añadidas
-
-#### CajaChicaPage
-- KPI principal: "Liquidez Total" con monto destacado
-- KPIs secundarios: Entrada Mensual (+) y Salida Mensual (-)
-- Formulario "Reposición Rápida": Cantidad, Fecha, Destinatario (Residente), Botón "Confirmar Transacción"
-- Historial en tabla: Fecha, ID de Referencia, Beneficiario, Monto, Status
-
-#### FlujoCajaChart
-- AreaChart de Recharts con dos series: Entrada (verde) y Salida (rojo)
-- Áreas con opacidad para visualizar solapamiento
-- Eje X: días de la semana (Lunes–Domingo)
-
-#### Gauge (Medidor Semicircular)
-- SVG semicircular con porcentaje de uso de la caja
-- Colores dinámicos: verde / amarillo / rojo
-- Texto descriptivo del estado ("Dentro de límites operativos")
-
-#### Módulos API y Hooks
-- `cajaChica.api.js`: listar cajas, detalle + movimientos, reposición, gasto, ajuste, toggle
-- `useCajaChica(obraId)`: queries y mutations para todos los endpoints
-
-### 📊 Endpoints Consumidos
-- `GET /api/obras/:obraId/caja-chica`
-- `GET /api/obras/:obraId/caja-chica/:id` (con movimientos)
-- `POST /api/obras/:obraId/caja-chica/:id/reposicion`
-- `POST /api/obras/:obraId/caja-chica/:id/gasto`
-
----
-
-## [0.7.0] — FASE 7: Módulo Gasto Personal _(Pendiente)_
-
-### ✨ Features Añadidas
-
-#### GastoPersonalPage
-- 3 StatCards: Total Gastado, Total Mensual, Categoría con más gastos (con ícono y monto)
-- Tabla de Shadow Expenses con columnas: Fecha, Categoría, Tienda, Descripción, Monto
-- Paginación "Anterior / Siguiente"
-
-#### GastosPieChart
-- Donut chart de Recharts con distribución por categoría
-- Total en el centro del donut
-- Leyenda lateral con color, nombre y monto de cada categoría
-
-#### Módulos API y Hooks
-- `gastos.api.js`: filtro `is_personal=true` para obtener solo gastos personales
-- `useGastosPersonales(obraId)`: hook específico para esta página
-
-### 📊 Endpoints Consumidos
-- `GET /api/obras/:obraId/gastos?is_personal=true`
-- `GET /api/obras/:obraId/gastos/resumen/categorias`
-
----
-
-## [0.8.0] — FASE 8: Sincronización Offline _(Pendiente)_
-
-### ✨ Features Añadidas
-
-#### Capa Offline (Dexie / IndexedDB)
-- Base de datos local con tablas: `gastos`, `estimaciones`, `sync_queue`, `obras_cache`
-- `syncService.procesarCola()`: envía operaciones pendientes al backend
-- `syncService.descargarCambios()`: pull de cambios desde el servidor
-- `syncService.detectarConflictos()`: detecta divergencias por versión
-
-#### Indicadores Visuales
-- `SyncIndicator` en Topbar: Verde (online) / Rojo (offline) / Amarillo (sincronizando)
-- Badge con contador de operaciones pendientes
-- Toast al reconectar: "Sincronizando X operaciones pendientes..."
-
-#### Resolución de Conflictos
-- Modal `ConflictResolver` para que el Admin resuelva conflictos manualmente
-- Vista lado a lado: datos locales vs datos del servidor
-- Opciones: "Usar mi versión" / "Usar versión del servidor"
-
-### 🔧 Modificaciones a Módulos Existentes
-- `GastoForm.jsx`: detecta modo offline → guarda en IndexedDB → toast diferente
-- `EstimacionForm.jsx`: mismo patrón que GastoForm para offline
-
-### 🧪 Tests
-
-```
-✅ Gasto guardado offline aparece en IndexedDB
-✅ Al reconectarse, el gasto se sincroniza automáticamente
-✅ SyncIndicator cambia de estado correctamente
-✅ ConflictResolver muestra ambas versiones correctamente
+POST /api/auth/login
+POST /api/auth/refresh
+POST /api/auth/logout
+GET  /api/obras
 ```
 
 ---
 
-## [0.9.0] — FASE 9: PWA + Optimización _(Pendiente)_
+## [0.0.0] — Setup e Infraestructura
 
-### ✨ Features Añadidas
-- Íconos PWA configurados (192x192 y 512x512)
-- App instalable en Android (Chrome) e iOS (Safari)
-- Lazy loading de todas las páginas con `React.lazy()`
-- Imágenes convertidas a WebP para menor peso
+### ⚙️ Configuraciones
+- Proyecto creado con Vite 8 + React 18
+- Tailwind CSS 3 con tokens de diseño CivitasPay
+- Colores: `civitas-blue`, `civitas-blue-dark`, `civitas-blue-light`, `civitas-blue-pale`, `civitas-bg`
+- Variables de entorno: `VITE_API_URL`
 
-### ⚙️ Configuración
-- Manifest PWA configurado con nombre, colores y display standalone
-- Service Worker con estrategia Cache First para assets
-- Service Worker con estrategia Network First para `/api/*`
+### 📦 Dependencias Instaladas
+**Producción:** react, react-dom, react-router-dom, zustand, @tanstack/react-query, axios, recharts, lucide-react, react-hook-form, @hookform/resolvers, zod, dexie, react-hot-toast, react-is
 
-### 📊 KPIs de Performance
-- Carga inicial: < 2 segundos en 4G
-- Time to Interactive: < 3 segundos
-- Bundle principal: < 200KB gzipped
-
-
----
-
-## [0.10.0] — FASE 10: Testing + QA + Deploy _(Pendiente)_
-
-### ✨ Features Añadidas
-- Tests unitarios para utilidades de formato y cálculo financiero
-- Tests de integración para hooks críticos (`useAuth`, `useObras`, `useGastos`)
-- Tests de componentes UI (`Button`, `Badge`, `StatCard`)
-
-### ⚙️ Configuración
-- Configurar Vitest + Testing Library + jsdom
-- Build de producción optimizado
-- Checklist de producción completado
-
-### 📊 Métricas Esperadas
-- Cobertura de tests ≥ 60%
-- Lighthouse Performance ≥ 90
-- Lighthouse PWA: Installable ✅
-- Bundle inicial < 500KB gzipped
-
----
+**Desarrollo:** vite, @vitejs/plugin-react, vite-plugin-pwa, @vite-pwa/assets-generator, tailwindcss@3, postcss, autoprefixer
+```
