@@ -11,7 +11,7 @@ import CajaChicaPage from './pages/CajaChicaPage';
 import GastoPersonalPage from './pages/GastoPersonalPage';
 import ContratosPage from './pages/ContratosPage';
 import PersonalPage from './pages/PersonalPage';
-
+import ConfigPage from './pages/ConfigPage';
 
 // Páginas — las iremos creando una por una
 import LoginPage from './pages/LoginPage';
@@ -68,7 +68,7 @@ function App() {
             <Route path="caja-chica" element={<CajaChicaPage />} />
             <Route path="gasto-personal" element={<GastoPersonalPage />} />
             <Route path="personal" element={<PersonalPage />} />
-            <Route path="config"         element={<Placeholder nombre="Configuración" />} />
+            <Route path="config" element={<ConfigPage />} />
           </Route>
 
           {/* Cualquier ruta desconocida redirige al dashboard */}
