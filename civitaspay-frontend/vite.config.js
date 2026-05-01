@@ -57,7 +57,7 @@ export default defineConfig({
               cacheName: 'api-cache',
               expiration: {
                 maxEntries: 100,
-                maxAgeSeconds: 60 * 60 * 24, // 24 horas
+                maxAgeSeconds: 60 * 60 * 24,
               },
             },
           },
@@ -65,4 +65,12 @@ export default defineConfig({
       },
     }),
   ],
+
+  // ── Vitest ──────────────────────────────────────────
+  test: {
+    environment: 'jsdom',
+    globals: true,
+    setupFiles: ['./src/test/setup.js'],
+    css: false,
+  },
 });
