@@ -6,53 +6,63 @@ import {
   Users,
   Settings,
   LogOut,
-  FileText,
-  Wallet,
-  PiggyBank,
-  ShoppingBag,
 } from 'lucide-react';
 import useAuthStore from '../../store/authStore';
 
-const navItems = [
-  {
-    label: 'Menú',
-    icon: LayoutDashboard,
-    to: '/dashboard',
-  },
-  {
-    label: 'Obras',
-    icon: Building2,
-    to: '/obras',
-    children: [
-      { label: 'Contratos', to: '/contratos' },
-    ],
-  },
-  {
-    label: 'Finanzas',
-    icon: CreditCard,
-    to: null,
-    children: [
-      { label: 'Gastos',          to: '/gastos' },
-      { label: 'Estimaciones',    to: '/estimaciones' },
-      { label: 'Caja Chica',      to: '/caja-chica' },
-      { label: 'Gasto Personal',  to: '/gasto-personal' },
-    ],
-  },
-  {
-    label: 'Personal',
-    icon: Users,
-    to: '/personal',
-  },
-  {
-    label: 'Config.',
-    icon: Settings,
-    to: '/config',
-  },
-];
+const getNavItems = (rol) => {
+  const esAdmin    = rol === 'ADMINISTRADOR';
+  const esAuxiliar = rol === 'AUXILIAR';
+  const tieneAcceso = esAdmin || esAuxiliar;
+
+  if (!tieneAcceso) return [];
+
+  return [
+    {
+      label: 'Menú',
+      icon:  LayoutDashboard,
+      to:    '/dashboard',
+    },
+    {
+      label: 'Obras',
+      icon:  Building2,
+      to:    '/obras',
+      children: [
+        { label: 'Contratos', to: '/contratos' },
+      ],
+    },
+    {
+      label: 'Finanzas',
+      icon:  CreditCard,
+      to:    null,
+      children: [
+        { label: 'Gastos',         to: '/gastos' },
+        { label: 'Estimaciones',   to: '/estimaciones' },
+        { label: 'Caja Chica',     to: '/caja-chica' },
+        { label: 'Gasto Personal', to: '/gasto-personal' },
+      ],
+    },
+    // Solo Admin
+    ...(esAdmin ? [
+      {
+        label: 'Personal',
+        icon:  Users,
+        to:    '/personal',
+      },
+      {
+        label: 'Config.',
+        icon:  Settings,
+        to:    '/config',
+      },
+    ] : []),
+  ];
+};
 
 function Sidebar() {
-  const logout = useAuthStore((state) => state.logout);
+  const logout  = useAuthStore((s) => s.logout);
+  const usuario = useAuthStore((s) => s.usuario);
   const navigate = useNavigate();
+
+  const navItems = getNavItems(usuario?.rol);
 
   const handleLogout = () => {
     logout();
@@ -66,13 +76,17 @@ function Sidebar() {
         <h1 className="text-white font-bold text-sm leading-tight">
           CivitasPay
         </h1>
+        {usuario && (
+          <p className="text-white/40 text-xs mt-0.5 truncate">
+            {usuario.rol?.toLowerCase()}
+          </p>
+        )}
       </div>
 
       {/* Navegación */}
       <nav className="flex-1 px-2 flex flex-col gap-1">
         {navItems.map((item) => (
           <div key={item.label}>
-            {/* Ítem principal */}
             {item.to ? (
               <NavLink
                 to={item.to}
@@ -95,7 +109,6 @@ function Sidebar() {
               </div>
             )}
 
-            {/* Sub-ítems */}
             {item.children?.map((child) => (
               <NavLink
                 key={child.to}

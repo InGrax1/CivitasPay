@@ -12,19 +12,7 @@ import GastoPersonalPage from './pages/GastoPersonalPage';
 import ContratosPage from './pages/ContratosPage';
 import PersonalPage from './pages/PersonalPage';
 import ConfigPage from './pages/ConfigPage';
-
-// Páginas — las iremos creando una por una
 import LoginPage from './pages/LoginPage';
-
-// Páginas placeholder — las reemplazaremos después
-const Placeholder = ({ nombre }) => (
-  <div className="flex items-center justify-center h-64">
-    <div className="text-center">
-      <p className="text-2xl font-bold text-civitas-blue">{nombre}</p>
-      <p className="text-gray-400 mt-1">Página en construcción</p>
-    </div>
-  </div>
-);
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -36,10 +24,17 @@ const queryClient = new QueryClient({
   },
 });
 
-// Protege rutas — si no hay sesión redirige al login
 function ProtectedRoute({ children }) {
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  return isAuthenticated ? children : <Navigate to="/login" replace />;
+  const { isAuthenticated, usuario } = useAuthStore((s) => s);
+  if (!isAuthenticated) return <Navigate to="/login" replace />;
+  if (usuario?.rol === 'RESIDENTE') return <Navigate to="/sin-acceso" replace />;
+  return children;
+}
+
+function SoloAdmin({ children }) {
+  const usuario = useAuthStore((s) => s.usuario);
+  if (usuario?.rol !== 'ADMINISTRADOR') return <Navigate to="/dashboard" replace />;
+  return children;
 }
 
 function App() {
@@ -47,31 +42,44 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
         <Routes>
-          {/* Ruta pública */}
+          {/* Rutas públicas */}
           <Route path="/login" element={<LoginPage />} />
+          <Route path="/sin-acceso" element={
+            <div className="min-h-screen flex items-center justify-center bg-civitas-bg">
+              <div className="text-center">
+                <p className="text-4xl mb-4">🔒</p>
+                <h1 className="text-xl font-bold text-gray-700">Sin acceso al sistema</h1>
+                <p className="text-sm text-gray-400 mt-2">
+                  Tu rol no tiene permisos para acceder a esta plataforma.
+                </p>
+                <button
+                  onClick={() => useAuthStore.getState().logout()}
+                  className="mt-4 text-civitas-blue text-sm hover:underline"
+                >
+                  Cerrar sesión
+                </button>
+              </div>
+            </div>
+          } />
 
-          {/* Rutas protegidas — todas dentro del layout */}
-          <Route
-            path="/"
-            element={
-              <ProtectedRoute>
-                <AppLayout />
-              </ProtectedRoute>
-            }
-          >
+          {/* Rutas protegidas */}
+          <Route path="/" element={
+            <ProtectedRoute>
+              <AppLayout />
+            </ProtectedRoute>
+          }>
             <Route index element={<Navigate to="/dashboard" replace />} />
-            <Route path="dashboard" element={<DashboardPage />} />
-            <Route path="obras" element={<ObrasPage />} />
-            <Route path="contratos" element={<ContratosPage />} />
-            <Route path="gastos" element={<GastosPage />} />
-            <Route path="estimaciones" element={<EstimacionesPage />} />
-            <Route path="caja-chica" element={<CajaChicaPage />} />
+            <Route path="dashboard"      element={<DashboardPage />} />
+            <Route path="obras"          element={<ObrasPage />} />
+            <Route path="contratos"      element={<ContratosPage />} />
+            <Route path="gastos"         element={<GastosPage />} />
+            <Route path="estimaciones"   element={<EstimacionesPage />} />
+            <Route path="caja-chica"     element={<CajaChicaPage />} />
             <Route path="gasto-personal" element={<GastoPersonalPage />} />
-            <Route path="personal" element={<PersonalPage />} />
-            <Route path="config" element={<ConfigPage />} />
+            <Route path="personal"       element={<SoloAdmin><PersonalPage /></SoloAdmin>} />
+            <Route path="config"         element={<SoloAdmin><ConfigPage /></SoloAdmin>} />
           </Route>
 
-          {/* Cualquier ruta desconocida redirige al dashboard */}
           <Route path="*" element={<Navigate to="/dashboard" replace />} />
         </Routes>
       </BrowserRouter>
