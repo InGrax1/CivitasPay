@@ -19,10 +19,7 @@ const loginLimiter = rateLimit({
   },
   standardHeaders: true, // Devuelve info en headers `RateLimit-*`
   legacyHeaders: false, // Desactiva headers `X-RateLimit-*`
-  // Identificar por IP
-  keyGenerator: (req) => {
-    return req.ip || req.connection.remoteAddress;
-  }
+  validate:        { xForwardedForHeader: false },
 });
 
 /**
@@ -38,7 +35,8 @@ const apiLimiter = rateLimit({
     codigo: 'RATE_LIMIT_EXCEEDED'
   },
   standardHeaders: true,
-  legacyHeaders: false
+  legacyHeaders: false,
+  validate:        { xForwardedForHeader: false },
 });
 
 /**
@@ -54,7 +52,8 @@ const strictLimiter = rateLimit({
     codigo: 'RATE_LIMIT_EXCEEDED'
   },
   standardHeaders: true,
-  legacyHeaders: false
+  legacyHeaders: false,
+  validate:        { xForwardedForHeader: false },
 });
 
 module.exports = {
