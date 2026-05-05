@@ -17,7 +17,7 @@ La aplicación está desplegada en producción. Contacta al administrador del pr
 ---
 
 ## ¿Qué es CivitasPay?
-```
+
 CivitasPay es un sistema de gestión financiera diseñado para la industria de la construcción. Su núcleo es un **motor financiero automático** que al registrar una estimación de cobro, calcula y distribuye el dinero a las categorías de gasto de cada obra sin intervención manual.
 Cliente paga $200,000
 ↓
@@ -32,11 +32,10 @@ Herramienta(10%):  $16,379.31
 
 
 Los porcentajes son configurables por obra.
-```
 ---
 
 ## Stack
-```
+
 | Capa | Tecnología |
 |------|-----------|
 | Frontend | React 18 + Vite 8 + Tailwind CSS 3 |
@@ -48,7 +47,7 @@ Los porcentajes son configurables por obra.
 | Deploy Backend | Render |
 | PWA | vite-plugin-pwa |
 | Tests | Vitest + Testing Library |
-```
+
 ---
 
 ## Estructura del Proyecto
