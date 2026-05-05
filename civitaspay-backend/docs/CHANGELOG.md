@@ -979,6 +979,8 @@ ACTIVO → LIQUIDADO (automático al completar pagos)
 ✅ Límite de 5 Admins — Error controlado al intentar crear el 6to
 ```
 
+
+
 ## [2.1.0] — Deploy a Producción
 
 ### 🚀 Infraestructura
@@ -1007,3 +1009,31 @@ ACTIVO → LIQUIDADO (automático al completar pagos)
 - Agregado `validate: { xForwardedForHeader: false }` en los tres limiters
 
 ### 🔒 Variables de Entorno en Producción (Render)
+NODE_ENV   = production
+PORT       = 3000
+DB_HOST    = [Aiven host]
+DB_PORT    = 25845
+DB_USER    = avnadmin
+DB_NAME    = defaultdb
+DB_SSL     = true
+JWT_SECRET = [generado con crypto.randomBytes(64)]
+
+---
+
+## [2.0.0] — Seguridad
+
+### 🔒 Features Añadidas
+
+#### Helmet — CSP + X-Frame-Options
+- `contentSecurityPolicy` con directivas restrictivas
+- `xFrameOptions: { action: 'deny' }` — previene Clickjacking
+- Configurado antes del middleware de CORS
+
+#### Rate Limiting
+- Login: máximo 5 intentos por IP cada 15 minutos
+- API general: máximo 100 requests por IP cada 15 minutos
+- Operaciones críticas: máximo 10 requests por hora
+
+### 📦 Dependencias Añadidas
+helmet
+express-rate-limit

@@ -8,21 +8,16 @@
 [![License](https://img.shields.io/badge/License-MIT-blue?style=flat-square)](LICENSE)
 
 ---
-
 ## 🌐 Demo
 
-| Servicio | URL |
-|---------|-----|
-| **Aplicación Web (PWA)** | https://civitas-pay-d54c.vercel.app |
-| **API Backend** | https://civitaspay-backend.onrender.com |
-| **Health Check** | https://civitaspay-backend.onrender.com/api/health |
+La aplicación está desplegada en producción. Contacta al administrador del proyecto para obtener acceso a la URL de la instancia correspondiente.
 
 > ⚠️ El backend corre en plan gratuito de Render — puede tardar hasta 50 segundos en responder tras un período de inactividad.
 
 ---
 
 ## ¿Qué es CivitasPay?
-
+```
 CivitasPay es un sistema de gestión financiera diseñado para la industria de la construcción. Su núcleo es un **motor financiero automático** que al registrar una estimación de cobro, calcula y distribuye el dinero a las categorías de gasto de cada obra sin intervención manual.
 Cliente paga $200,000
 ↓
@@ -37,11 +32,11 @@ Herramienta(10%):  $16,379.31
 
 
 Los porcentajes son configurables por obra.
-
+```
 ---
 
 ## Stack
-
+```
 | Capa | Tecnología |
 |------|-----------|
 | Frontend | React 18 + Vite 8 + Tailwind CSS 3 |
@@ -53,10 +48,12 @@ Los porcentajes son configurables por obra.
 | Deploy Backend | Render |
 | PWA | vite-plugin-pwa |
 | Tests | Vitest + Testing Library |
-
+```
 ---
 
 ## Estructura del Proyecto
+
+```
 CivitasPay/
 ├── civitaspay-backend/     # API REST — Node.js + Express + MySQL
 │   ├── src/
@@ -81,7 +78,7 @@ CivitasPay/
 │   ├── test/
 │   └── utils/
 └── public/
-
+```
 
 ---
 
@@ -126,13 +123,14 @@ CivitasPay/
 ---
 
 ## Tests
+```
 Test Files  9 passed
 Tests       61 passed
 
 Nivel 1 — Utilidades:   formatCurrency, formatDate, financialMath
 Nivel 2 — Componentes:  Button, Badge, ConfirmDeleteModal
 Nivel 3 — Hooks:        useAuth, useObras, usePersonal
-
+```
 
 ---
 

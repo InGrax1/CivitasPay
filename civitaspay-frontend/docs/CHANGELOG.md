@@ -3,23 +3,24 @@
 Todos los cambios notables en este proyecto serán documentados en este archivo.
 
 ---
-
 ## Estado Actual del Proyecto
 
 | Métrica | Valor |
 |---------|-------|
-| **Versión** | 0.14.0 |
-| **Progreso General** | 95% |
+| **Versión** | 0.15.0 |
+| **Progreso General** | 100% |
 | **Páginas implementadas** | 11 / 11 |
 | **Módulos conectados al backend** | 10 |
-| **PWA** | ✅ Completado |
+| **PWA** | ✅ Instalable en producción |
 | **Tests** | ✅ 61 tests — 0 fallos |
 | **Roles en sidebar** | ✅ Completado |
-| **Offline / Dexie** | Pendiente (a confirmacion de cliente) |
-| **Deploy** | Pendiente |
-```
+| **Seguridad** | ✅ Helmet + Rate Limiting |
+| **Deploy** | ✅ Vercel + Render + Aiven |
+| **Offline / Dexie** | 🔄 Fase 2 |
 
----
+
+```
+```
 ## [0.15.0] — Deploy a Producción
 
 ### 🚀 Infraestructura
@@ -46,30 +47,6 @@ vercel.json              — buildCommand + rewrites para SPA
 
 ### 🔧 Archivos Modificados
 src/api/axios.config.js — baseURL usa import.meta.env.VITE_API_URL
-
-
-### 🌐 URLs de Producción
-App (PWA): https://civitas-pay-d54c.vercel.app Login: https://civitas-pay-d54c.vercel.app/login
-
-
----
-Y actualiza el bloque de estado al inicio:
-
-## Estado Actual del Proyecto
-
-| Métrica | Valor |
-|---------|-------|
-| **Versión** | 0.15.0 |
-| **Progreso General** | 100% |
-| **Páginas implementadas** | 11 / 11 |
-| **Módulos conectados al backend** | 10 |
-| **PWA** | ✅ Instalable en producción |
-| **Tests** | ✅ 61 tests — 0 fallos |
-| **Roles en sidebar** | ✅ Completado |
-| **Seguridad** | ✅ Helmet + Rate Limiting |
-| **Deploy** | ✅ Vercel + Render + Aiven |
-| **Offline / Dexie** | 🔄 Fase 2 |
-
 
 ```
 ## [0.14.0] — Roles en Sidebar y Protección de Rutas
