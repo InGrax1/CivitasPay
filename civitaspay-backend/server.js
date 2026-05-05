@@ -18,10 +18,64 @@ const fondoGarantiaRoutes = require('./src/routes/fondo_garantia.routes');
 const cierresRoutes = require('./src/routes/cierres.routes');
 const usuariosAdminRoutes = require('./src/routes/usuarios_admin.routes');
 
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 const API_PREFIX = process.env.API_PREFIX || '/api';
 
+
+// =====================================================
+// SEGURIDAD — Helmet (CSP, X-Frame-Options, etc.)
+// =====================================================
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc:  ["'self'"],
+      scriptSrc:   ["'self'"],
+      styleSrc:    ["'self'", "'unsafe-inline'"],
+      imgSrc:      ["'self'", "data:", "https:"],
+      connectSrc:  ["'self'"],
+      fontSrc:     ["'self'"],
+      objectSrc:   ["'none'"],
+      frameSrc:    ["'none'"],
+    },
+  },
+  xFrameOptions: { action: 'deny' },
+}));
+
+// =====================================================
+// RATE LIMITING
+// =====================================================
+
+// Login — máximo 10 intentos por IP cada 15 minutos
+const loginLimiter = rateLimit({
+  windowMs:         15 * 60 * 1000,
+  max:              10,
+  message: {
+    success: false,
+    error:   'Demasiados intentos de inicio de sesión. Intenta de nuevo en 15 minutos.',
+  },
+  standardHeaders: true,
+  legacyHeaders:   false,
+});
+
+// API general — máximo 200 peticiones por IP cada 15 minutos
+const apiLimiter = rateLimit({
+  windowMs:         15 * 60 * 1000,
+  max:              200,
+  message: {
+    success: false,
+    error:   'Demasiadas peticiones. Intenta de nuevo en unos minutos.',
+  },
+  standardHeaders: true,
+  legacyHeaders:   false,
+});
+
+// Aplicar limiters
+app.use(`${API_PREFIX}/auth/login`, loginLimiter);
+app.use(API_PREFIX, apiLimiter);
 
 // =====================================================
 // CORS — Permite peticiones desde el frontend
