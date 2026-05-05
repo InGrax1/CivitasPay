@@ -978,3 +978,32 @@ ACTIVO → LIQUIDADO (automático al completar pagos)
 ✅ DELETE /api/personal/:id — Soft delete correcto
 ✅ Límite de 5 Admins — Error controlado al intentar crear el 6to
 ```
+
+## [2.1.0] — Deploy a Producción
+
+### 🚀 Infraestructura
+
+#### Base de Datos — Aiven MySQL
+- Migración de BD local a Aiven MySQL 8.0 (cloud)
+- Export desde MySQL Workbench + limpieza de cláusulas DEFINER
+- Import exitoso — 18 tablas migradas
+
+#### Backend — Render (Free tier)
+- Deploy automático desde GitHub rama `main`
+- Root Directory: `civitaspay-backend`
+- Build Command: `npm install`
+- Start Command: `node server.js`
+- Auto-deploy activado en cada push a `main`
+
+### 🔧 Archivos Modificados
+
+#### `server.js`
+- Health check endpoint `/api/health` para monitoreo de Render
+- CORS actualizado para aceptar origen de Vercel en producción
+- Rate limiter con `validate: { xForwardedForHeader: false }` para compatibilidad con IPv6 en Render
+
+#### `src/middleware/rateLimiter.js`
+- Eliminado `keyGenerator` personalizado que causaba error `ERR_ERL_KEY_GEN_IPV6`
+- Agregado `validate: { xForwardedForHeader: false }` en los tres limiters
+
+### 🔒 Variables de Entorno en Producción (Render)

@@ -20,9 +20,58 @@ Todos los cambios notables en este proyecto serán documentados en este archivo.
 ```
 
 ---
+## [0.15.0] — Deploy a Producción
+
+### 🚀 Infraestructura
+
+#### Frontend — Vercel
+- Deploy automático desde GitHub rama `main`
+- Root Directory: `civitaspay-frontend`
+- Build Command: `npm install --legacy-peer-deps && npm run build`
+- Install Command: `npm install --legacy-peer-deps`
+- Framework detectado automáticamente: Vite
+- PWA instalable desde la URL de producción
+
+#### Variables de Entorno
+- `.env.production` — URL del backend en Render
+- `.env.development` — URL del backend local
+- `VITE_API_URL` inyectada en build via `import.meta.env`
+
+### 🔧 Archivos Creados
+.env.production          — VITE_API_URL apuntando a Render
+.env.development         — VITE_API_URL apuntando a localhost
+.npmrc                   — legacy-peer-deps=true para Vercel
+vercel.json              — buildCommand + rewrites para SPA
 
 
-```md
+### 🔧 Archivos Modificados
+src/api/axios.config.js — baseURL usa import.meta.env.VITE_API_URL
+
+
+### 🌐 URLs de Producción
+App (PWA): https://civitas-pay-d54c.vercel.app Login: https://civitas-pay-d54c.vercel.app/login
+
+
+---
+Y actualiza el bloque de estado al inicio:
+
+## Estado Actual del Proyecto
+
+| Métrica | Valor |
+|---------|-------|
+| **Versión** | 0.15.0 |
+| **Progreso General** | 100% |
+| **Páginas implementadas** | 11 / 11 |
+| **Módulos conectados al backend** | 10 |
+| **PWA** | ✅ Instalable en producción |
+| **Tests** | ✅ 61 tests — 0 fallos |
+| **Roles en sidebar** | ✅ Completado |
+| **Seguridad** | ✅ Helmet + Rate Limiting |
+| **Deploy** | ✅ Vercel + Render + Aiven |
+| **Offline / Dexie** | 🔄 Fase 2 |
+
+
+```
 ## [0.14.0] — Roles en Sidebar y Protección de Rutas
 
 ### ✨ Features Añadidas
