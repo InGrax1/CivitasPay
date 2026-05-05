@@ -39,3 +39,5 @@ coverage
 
 # OS
 Thumbs.db
+
+.env.development
