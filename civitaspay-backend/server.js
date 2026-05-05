@@ -51,26 +51,28 @@ app.use(helmet({
 
 // Login — máximo 10 intentos por IP cada 15 minutos
 const loginLimiter = rateLimit({
-  windowMs:         15 * 60 * 1000,
-  max:              10,
+  windowMs:        15 * 60 * 1000,
+  max:             10,
   message: {
     success: false,
     error:   'Demasiados intentos de inicio de sesión. Intenta de nuevo en 15 minutos.',
   },
   standardHeaders: true,
   legacyHeaders:   false,
+  validate:        { xForwardedForHeader: false },
 });
 
 // API general — máximo 200 peticiones por IP cada 15 minutos
 const apiLimiter = rateLimit({
-  windowMs:         15 * 60 * 1000,
-  max:              200,
+  windowMs:        15 * 60 * 1000,
+  max:             200,
   message: {
     success: false,
     error:   'Demasiadas peticiones. Intenta de nuevo en unos minutos.',
   },
   standardHeaders: true,
   legacyHeaders:   false,
+  validate:        { xForwardedForHeader: false },
 });
 
 // Aplicar limiters
