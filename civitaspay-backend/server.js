@@ -86,6 +86,7 @@ app.use((req, res, next) => {
   const allowedOrigins = [
     'http://localhost:5173',
     'https://civitaspay.vercel.app',
+    'https://civitas-pay-d54c.vercel.app',
   ]
   const origin = req.headers.origin;
   if (allowedOrigins.includes(origin)) {
