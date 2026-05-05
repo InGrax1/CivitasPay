@@ -92,6 +92,11 @@ app.use((req, res, next) => {
   next();
 });
 
+// Health check para Render
+app.get('/api/health', (req, res) => {
+  res.json({ status: 'ok', entorno: process.env.NODE_ENV });
+});
+
 // =====================================================
 // MIDDLEWARE GLOBALES
 // =====================================================
